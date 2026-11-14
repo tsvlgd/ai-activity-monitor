@@ -1,0 +1,5 @@
+node_modules/
+.venv/
+_tmp/
+out/bundle/
+__pycache__/

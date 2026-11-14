@@ -1,0 +1,23 @@
+{
+  "name": "aimon-video",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI Activity Monitor promo video (Remotion)",
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion render src/index.ts Promo out/aimon-promo.mp4 --codec=h264 --crf=18 --concurrency=3",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.543",
+    "@remotion/google-fonts": "4.0.543",
+    "@remotion/media": "4.0.543",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.543"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.8",
+    "typescript": "5.8.3"
+  }
+}
