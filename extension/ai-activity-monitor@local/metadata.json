@@ -1,0 +1,9 @@
+{
+  "uuid": "ai-activity-monitor@local",
+  "name": "AI Activity Monitor",
+  "description": "Floating edge indicators that show what your Claude Code and OpenCode sessions are doing: working, waiting for approval, completed or failed. Click an indicator for a focus safe activity preview.",
+  "shell-version": ["46"],
+  "settings-schema": "org.gnome.shell.extensions.ai-activity-monitor",
+  "version": 1,
+  "url": "https://localhost/ai-activity-monitor"
+}

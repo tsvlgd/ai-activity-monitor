@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.ai-activity-monitor" path="/org/gnome/shell/extensions/ai-activity-monitor/">
+    <key name="edge" type="s">
+      <choices>
+        <choice value="left"/>
+        <choice value="right"/>
+      </choices>
+      <default>'left'</default>
+      <summary>Screen edge</summary>
+      <description>Which screen edge the activity tiles dock to.</description>
+    </key>
+    <key name="offset-x" type="i">
+      <range min="0" max="400"/>
+      <default>12</default>
+      <summary>Horizontal offset</summary>
+      <description>Horizontal distance from the screen edge in pixels.</description>
+    </key>
+    <key name="offset-y" type="i">
+      <range min="0" max="2000"/>
+      <default>140</default>
+      <summary>Vertical offset</summary>
+      <description>Distance from the top of the work area in pixels.</description>
+    </key>
+    <key name="icon-size" type="i">
+      <range min="24" max="64"/>
+      <default>44</default>
+      <summary>Tile size</summary>
+      <description>Size of each tile in pixels.</description>
+    </key>
+    <key name="spacing" type="i">
+      <range min="0" max="40"/>
+      <default>10</default>
+      <summary>Tile spacing</summary>
+      <description>Gap between tiles in pixels.</description>
+    </key>
+    <key name="animate-working" type="b">
+      <default>true</default>
+      <summary>Animate working state</summary>
+      <description>Animate the tile while an agent is working.</description>
+    </key>
+    <key name="notify-completed" type="b">
+      <default>true</default>
+      <summary>Notify on completion</summary>
+      <description>Show a notification when a turn completes.</description>
+    </key>
+    <key name="notify-approval" type="b">
+      <default>true</default>
+      <summary>Notify on approval needed</summary>
+      <description>Show a notification when an agent waits for approval.</description>
+    </key>
+    <key name="notify-error" type="b">
+      <default>true</default>
+      <summary>Notify on error</summary>
+      <description>Show a notification when an agent reports an error.</description>
+    </key>
+    <key name="notify-terminated" type="b">
+      <default>true</default>
+      <summary>Notify on termination</summary>
+      <description>Show a notification when an agent session terminates.</description>
+    </key>
+    <key name="min-turn-seconds" type="i">
+      <range min="0" max="3600"/>
+      <default>15</default>
+      <summary>Minimum turn length</summary>
+      <description>Completion notification only for turns at least this many seconds long.</description>
+    </key>
+    <key name="completed-hold-seconds" type="i">
+      <range min="30" max="86400"/>
+      <default>180</default>
+      <summary>Completed state hold time</summary>
+      <description>How long a completed or error state stays before reverting to idle.</description>
+    </key>
+    <key name="show-prompt-text" type="b">
+      <default>true</default>
+      <summary>Show prompt text</summary>
+      <description>Show prompt previews in the activity preview. Disable for privacy.</description>
+    </key>
+    <key name="terminal-command" type="s">
+      <default>'gnome-terminal --working-directory=%d'</default>
+      <summary>Terminal command</summary>
+      <description>Command used to open a terminal. %d is replaced by the session directory.</description>
+    </key>
+    <key name="show-on" type="s">
+      <choices>
+        <choice value="desktop"/>
+        <choice value="always"/>
+      </choices>
+      <default>'desktop'</default>
+      <summary>Where the tiles are visible</summary>
+      <description>desktop: on the desktop layer of the current workspace, hidden where an application window covers them. always: on top of every application.</description>
+    </key>
+    <key name="hide-idle" type="b">
+      <default>true</default>
+      <summary>Hide idle sessions</summary>
+      <description>Show a tile only while a session is working, waiting, recently completed or failed.</description>
+    </key>
+    <key name="tile-positions" type="s">
+      <default>'{}'</default>
+      <summary>Dragged tile positions</summary>
+      <description>JSON object mapping provider id to its dragged position, for example {"claude-code": {"x": 1600, "y": 320}}.</description>
+    </key>
+    <key name="panel-indicators" type="b">
+      <default>true</default>
+      <summary>Show icons in the top bar</summary>
+      <description>Icons after the workspace indicator, visible from every window.</description>
+    </key>
+    <key name="desktop-tiles" type="b">
+      <default>true</default>
+      <summary>Show tiles on the desktop</summary>
+      <description>Draggable tiles on the desktop layer, hidden under application windows.</description>
+    </key>
+    <key name="panel-placement" type="s">
+      <default>'{}'</default>
+      <summary>Top bar icon slots</summary>
+      <description>JSON object mapping provider id to {"box": "left"|"center"|"right", "index": n}, set by dragging.</description>
+    </key>
+    <key name="desktop-play" type="b">
+      <default>true</default>
+      <summary>Play on the empty desktop</summary>
+      <description>When no application window is open on the workspace, desktop tiles drift around, bounce off each other and say hi.</description>
+    </key>
+  </schema>
+</schemalist>

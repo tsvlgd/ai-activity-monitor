@@ -1,0 +1,42 @@
+{
+ "leaks": [
+  [
+   "export OPENAI_API_KEY=sk-abc123def456ghi",
+   "abc123def456"
+  ],
+  [
+   "AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMIK7MDENG",
+   "wJalrXUtnFEMI"
+  ],
+  [
+   "GITHUB_TOKEN=ghp_1234567890abcdef",
+   "1234567890abcdef"
+  ],
+  [
+   "psql postgres://user:pw0rdX@db.local/app",
+   "pw0rdX"
+  ],
+  [
+   "mysql -u root -pHunter2 shop",
+   "Hunter2"
+  ],
+  [
+   "curl -H 'Authorization: Bearer abc.def.ghi' https://x",
+   "abc.def.ghi"
+  ],
+  [
+   "git clone https://bob:s3cretpw@github.com/x/y",
+   "s3cretpw"
+  ]
+ ],
+ "keep": [
+  [
+   "mkdir -p build/out",
+   "mkdir -p build/out"
+  ],
+  [
+   "npm test -- --token-count",
+   null
+  ]
+ ]
+}

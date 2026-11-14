@@ -1,0 +1,7 @@
+extension/*/schemas/gschemas.compiled
+gschemas.compiled
+__pycache__/
+*.pyc
+node_modules/
+*.tmp
+.claude/
