@@ -214,6 +214,12 @@ export class PanelIndicators {
     render(groups, {animate}) {
         for (const [provider, icon] of this._icons) {
             if (!groups.has(provider)) {
+                // A session can end while its icon is held: the stage capture and the
+                // pending drop must not outlive the actor they refer to.
+                if (this._press?.icon === icon) {
+                    this._endPress(this._press);
+                    this._press = null;
+                }
                 icon.destroy();
                 this._icons.delete(provider);
             }
@@ -234,6 +240,8 @@ export class PanelIndicators {
         if (event.get_button() !== Clutter.BUTTON_PRIMARY)
             return Clutter.EVENT_PROPAGATE;
         const [x] = event.get_coords();
+        // A press whose release never arrived must not leave its handler on the stage.
+        this._endPress(this._press);
         // Track the drag at the stage: the clock button takes over a plain
         // grab when the pointer crosses it, so motion and release would stop.
         const capture = global.stage.connect('captured-event', (_s, ev) => {
