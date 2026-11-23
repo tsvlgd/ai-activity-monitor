@@ -13,13 +13,16 @@ DEV="${AIMON_DEV_DIR:-${XDG_RUNTIME_DIR}/aimon-dev}"
 SIZE="${1:-1600x900}"
 # AIMON_HEADLESS=1 runs on a virtual monitor with no window on the host screen.
 MODE="${AIMON_HEADLESS:+headless}"
+# Ubuntu ships its own shell mode (dock, theme); other distros run the default.
+SHELL_MODE=""
+[ -f /usr/share/gnome-shell/modes/ubuntu.json ] && SHELL_MODE="--mode=ubuntu"
 mkdir -p "$DEV/data/gnome-shell/extensions" "$DEV/cfg" "$DEV/cache"
 ln -sfn "$ROOT/extension/$UUID" "$DEV/data/gnome-shell/extensions/$UUID"
 # Mirror the real desktop look (read only): user theme extension, theme name,
 # wallpaper, colour scheme and fonts. Nothing is written to the real dconf.
 UT="user-theme@gnome-shell-extensions.gcampax.github.com"
 [ -d "$HOME/.local/share/gnome-shell/extensions/$UT" ] && ln -sfn "$HOME/.local/share/gnome-shell/extensions/$UT" "$DEV/data/gnome-shell/extensions/$UT"
-r() { dconf read "$1" 2>/dev/null; }
+r() { dconf read "$1" 2>/dev/null || true; }
 MIRROR=""
 for k in /org/gnome/shell/extensions/user-theme/name \
          /org/gnome/desktop/background/picture-uri /org/gnome/desktop/background/picture-uri-dark \
@@ -45,9 +48,9 @@ dconf write /org/gnome/shell/disabled-extensions "['ding@rastersoft.com']"
 dconf write /org/gnome/desktop/interface/enable-animations true
 dconf write /org/gnome/shell/welcome-dialog-last-shown-version "'99'"
 if [ "$MODE" = headless ]; then
-  exec gnome-shell --headless --wayland --no-x11 --virtual-monitor $SIZE --mode=ubuntu
+  exec gnome-shell --headless --wayland --no-x11 --virtual-monitor $SIZE $SHELL_MODE
 fi
-exec gnome-shell --nested --wayland --mode=ubuntu
+exec gnome-shell --nested --wayland $SHELL_MODE
 INNER
 chmod +x "$DEV/run-inner.sh"
 # Never let anything started inside the test shell reach the real display:

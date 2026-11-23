@@ -11,3 +11,4 @@ media/promo-video/*
 !media/promo-video/out/
 media/promo-video/out/*
 !media/promo-video/out/glanceagent-promo-v3.mp4
+ci/out/

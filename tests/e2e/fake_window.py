@@ -4,7 +4,10 @@
 # polls <state_dir>/<app_id>.title to change the window title, the way a
 # terminal shows its active tab's title.
 import os, subprocess, sys
-if len(sys.argv) < 5 or sys.argv[4] in ("", "wayland-0"):
+# On a desktop, wayland-0 is the real session: never draw there. Inside a test
+# container there is no host session, so the runner allows it explicitly.
+in_container = os.environ.get("AIMON_E2E_IN_CONTAINER") == "1"
+if len(sys.argv) < 5 or not sys.argv[4] or (sys.argv[4] == "wayland-0" and not in_container):
     sys.exit("refusing: pass the nested compositor's display, never the host's")
 os.environ["WAYLAND_DISPLAY"] = sys.argv[4]
 os.environ["GDK_BACKEND"] = "wayland"
