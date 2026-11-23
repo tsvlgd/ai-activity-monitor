@@ -3,7 +3,7 @@ Goal: GlanceAgent installs and passes the headless e2e check on the common and n
 Started: 2026-11-23. Nothing of the layered build exists yet; start at phase 2.
 
 ## Layers (owner's map)
-1. Desktop: GNOME only. Non GNOME (KDE, Mint, Hyprland) is out of scope for now.
+1. Desktop: GNOME only. Non GNOME (KDE, Mint, Hyprland) is out of scope until GNOME ships; then the tray app is the next workstream (`public-release.md`).
 2. GNOME version, set by the distro: 46 works today; widen to 47 to 51.
 3. Terminal: gnome-terminal works (tab switch and presence); Ptyxis, Kitty, Konsole need adding.
 
@@ -11,7 +11,7 @@ Started: 2026-11-23. Nothing of the layered build exists yet; start at phase 2.
 - [x] 0. Research (`docs/research/agentglance.md`): distro matrix, blockers, CI plan
 - [x] 1. Owner decisions: name GlanceAgent, UUID `glanceagent@mehfooj.dev`, license GPL-2.0-or-later
 - [x] 2. Container harness: `scripts/container-test.sh fedora-43` passes all 18 e2e checks on GNOME 49.10 in Docker (about 40 s cached)
-- [ ] 3. Version layer  <- next: add ci/containers for ubuntu-24.04, debian-13, ubuntu-26.04, fedora-45; then declare shell versions and run with version validation ON: support GNOME 46 to 51 (metadata shell-version, St `vertical` removal in 51, harness `--mode=ubuntu` and `--nested` flags); matrix Ubuntu 24.04 (46), Debian 13 (48), Fedora 43 (49), Ubuntu 26.04 (50), Fedora 45 or Arch (51), all green
+- [ ] 3. Version layer <- next: add ci/containers for ubuntu-24.04, debian-13, ubuntu-26.04, fedora-45; then declare shell versions and run with version validation ON: support GNOME 46 to 51 (metadata shell-version, St `vertical` removal in 51, harness `--mode=ubuntu` and `--nested` flags); matrix Ubuntu 24.04 (46), Debian 13 (48), Fedora 43 (49), Ubuntu 26.04 (50), Fedora 45 (51), Arch (rolling, newest), all green
 - [ ] 4. Terminal layer: Ptyxis first, then Kitty, Konsole: window title equals active tab title check, tab switching, e2e per terminal in containers
 - [ ] 5. CI: GitHub Actions for unit, lint, zip build, distro matrix, release on tag; nightly on rolling images
 - [ ] 6. Packaging: extensions.gnome.org zip, adapter installer, AUR and COPR
