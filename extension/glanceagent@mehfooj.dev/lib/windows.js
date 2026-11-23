@@ -52,8 +52,11 @@ export function focusInfo(pid, peerPids = []) {
     if (!w || !pid || wpid <= 0)
         return null;
     const owned = p => p > 0 && ancestors(p).includes(wpid);
-    if (!owned(pid))
-        return {title: w.get_title() ?? '', owns: false, terminal: false, siblings: 0};
+    if (!owned(pid)) {
+        const windowPids = new Set(global.get_window_actors().map(a => a.meta_window.get_pid()).filter(p => p > 0));
+        const detached = !ancestors(pid).some(a => windowPids.has(a));
+        return {title: w.get_title() ?? '', owns: false, detached, terminal: detached && isTerminal(w), siblings: 0};
+    }
     return {
         title: w.get_title() ?? '',
         owns: true,

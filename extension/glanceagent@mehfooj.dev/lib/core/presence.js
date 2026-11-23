@@ -4,6 +4,9 @@
 // The shell side (lib/windows.js) describes the focused window as:
 //   title     the window title; for a terminal, the active tab's title
 //   owns      the window's process is an ancestor of the session's process
+//   detached  the session's process has no window process above it at all
+//             (Claude Code can start its terminal client from a helper that
+//             systemd adopted), so ownership cannot be proven either way
 //   terminal  the window is a terminal, so its title names the active tab
 //   siblings  live sessions of the same agent owned by that window's process
 //
@@ -44,7 +47,16 @@ function basename(path) {
 }
 
 export function isWatching(session, focus) {
-    if (!session || !focus?.owns)
+    if (!session || !focus)
+        return false;
+    if (focus.detached && !focus.owns) {
+        // Only an exact tab title proves the user is on this session.
+        if (!focus.terminal || !session.title)
+            return false;
+        const t = tabText(session.provider, focus.title);
+        return t !== null && sameTitle(t, session.title);
+    }
+    if (!focus.owns)
         return false;
     if (!focus.terminal) {
         // An editor such as VS Code: one window per project, and the window
