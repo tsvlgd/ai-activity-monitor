@@ -24,6 +24,23 @@ def ctl(*args):
     out = subprocess.run([f"{ROOT}/scripts/devctl.sh", *args], capture_output=True, text=True, timeout=10).stdout
     return json.loads(out.strip().splitlines()[-1])
 
+def focus(title, timeout=20):
+    # Windows appear later on slow (software rendered) shells: retry, and stop
+    # the run if the window never shows up, since every check after depends on it.
+    end = time.time() + timeout
+    while time.time() < end:
+        r = ctl("focus", *title.split(" "))
+        if "focused" in r["result"]:
+            # Activation is asynchronous: done only once the shell reports it.
+            for _ in range(20):
+                time.sleep(0.15)
+                now = ctl("state")["focusAfter"] or ""
+                if title in now:
+                    return now
+            print(f"     focus asked for {title!r}, shell reports {now!r}")
+        time.sleep(0.3)
+    sys.exit(f"window titled like {title!r} never appeared")
+
 def state():
     return ctl("state")["result"]
 
@@ -85,8 +102,8 @@ for s in (S1, S2):
 time.sleep(0.6)
 
 # A. Watching the session's own tab: nothing at all.
-ctl("focus", "start")
 set_title("org.test.Terminal", f"{STAR} {T1}")
+focus(T1)
 ctl("tray-clear"); time.sleep(0.2); base = notes(state())
 turn(S1)
 st = state()
@@ -121,14 +138,14 @@ check("C arrive at tab: icon still", panel(st)["motion"] == "none", panel(st))
 resolve(S1)
 
 # D. Another app focused: notify and bounce.
-ctl("focus", "notes.txt")
+focus("notes.txt")
 time.sleep(0.5)
 ctl("tray-clear"); time.sleep(0.2); base = notes(state())
 turn(S1)
 st = state()
 check("D other app: completion notifies", notes(st) == base + 1, st["notifications"])
 check("D other app: bounces", panel(st)["motion"] == "attention", panel(st))
-ctl("focus", T1)  # back to the terminal, still on s1's tab: seen
+focus(T1)  # back to the terminal, still on s1's tab: seen
 time.sleep(0.6)
 st = state()
 check("D back to window on that tab: withdrawn", notes(st) == base, st["notifications"])
@@ -157,7 +174,7 @@ check("F shell tab: error notifies", "Claude Code stopped with an error" in titl
 # G. Resume: same session id, new process, while watching its tab: still quiet.
 emit(S1, "session_end", reason="prompt_input_exit"); time.sleep(3.2)
 set_title("org.test.Terminal", f"{STAR} {T1}")
-ctl("focus", T1); time.sleep(0.4)
+focus(T1); time.sleep(0.4)
 emit(S1, "session_start", reason="resume", pid=PID[S1], title=T1); time.sleep(0.5)
 ctl("tray-clear"); time.sleep(0.2); base = notes(state())
 turn(S1)

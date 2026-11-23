@@ -96,6 +96,7 @@ npm test          # 59 Node + 23 Python tests, must pass before any change is do
 npm run lint      # ESLint
 AIMON_HEADLESS=1 scripts/dev-nested.sh 1600x900
 scripts/devctl.sh state
+scripts/container-test.sh fedora-43   # e2e check inside a distro container (Docker)
 ```
 
 ## Skills and tools that fit this project
