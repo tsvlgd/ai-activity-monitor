@@ -6,3 +6,4 @@
 - 2026-11-23: Promo video v2 and v3 (GlanceAgent name in video, top bar click, Chrome video beat) rendered, backed up in media/promo-video (0261226, 0d7bc8c)
 - 2026-11-23: Repo now keeps only the final promo video v3 MP4; video source and other renders git ignored, kept in ~/Dev/workspace/aimon-video
 - 2026-11-23: Owner kept the name GlanceAgent despite AgentGlance (macOS); AGENTS.md now requires typed branches (feat, fix, docs, ...) and Conventional Commits
+- 2026-11-23: Owner standing rule: agents open the PR, review, test and merge to main themselves, and keep local main equal to origin/main (AGENTS.md Git workflow)

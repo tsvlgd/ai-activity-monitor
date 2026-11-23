@@ -48,11 +48,23 @@ up to date `main`, and is merged back only when it is done and green.
   switch branches in a working tree someone else is using.
 * Keep a branch to one topic. Unrelated fixes found on the way get their own
   branch.
-* Before merging: `npm test` and `npm run lint` pass, plus the headless shell
-  check for anything under `extension/`. Then rebase on `main` and merge with a
-  fast forward (or squash a noisy branch) so `main` stays linear.
-* After merging: push `main`, delete the branch locally and on the remote, and
-  remove its worktree.
+* Merging is the agent's job, not the owner's. Do not wait for approval and do
+  not ask the owner to merge. For every branch:
+  1. Run `npm test` and `npm run lint`, plus the headless shell check for
+     anything under `extension/`. State plainly anything that could not run.
+  2. Rebase on `origin/main`, push the branch, open a PR with `gh pr create`
+     (problem, change, verification, what was not verified).
+  3. Review your own diff in full and leave the review as a PR comment, with
+     accepted risks. Fix findings before merging.
+  4. Merge with `gh pr merge --rebase --delete-branch` so `main` stays linear.
+  5. Sync: `git fetch --prune`, then bring local `main` to `origin/main` with
+     `git merge --ff-only origin/main`, and remove the branch and its worktree.
+* Local `main` always equals `origin/main`. Never commit on local `main`. If it
+  has diverged (a commit made there by mistake), first check the commit lives
+  on another branch, move it to a branch if not, then reset local `main` to
+  `origin/main`.
+* Never merge a PR that has failing tests or unreviewed risky changes; report
+  the blocker to the owner instead.
 
 ### Commit messages: Conventional Commits
 
