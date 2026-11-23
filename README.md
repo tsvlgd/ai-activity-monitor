@@ -188,4 +188,9 @@ docs/diagrams/                         SVG and editable Excalidraw diagrams, bui
 
 ## License
 
-No license has been chosen yet; all rights reserved until one is added.
+GlanceAgent is free software, licensed under the GNU General Public License,
+version 2 or (at your option) any later version (GPL-2.0-or-later), the same
+terms as GNOME Shell. The full text is in [LICENSE](LICENSE).
+
+The Claude Code and OpenCode logos in the extension's `icons/` folder belong to
+their owners and are not covered by this license.

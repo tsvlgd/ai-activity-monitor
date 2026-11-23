@@ -7,5 +7,6 @@
   "scripts": {
     "test": "node --test 'tests/unit/*.test.js' 'tests/integration/*.test.js' && python3 -m unittest discover -s tests/python -t . -q",
     "lint": "eslint extension adapters tests"
-  }
+  },
+  "license": "GPL-2.0-or-later"
 }
