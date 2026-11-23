@@ -1,6 +1,6 @@
 # Architecture
 
-AI Activity Monitor shows what Claude Code and OpenCode sessions are doing, as
+GlanceAgent shows what Claude Code and OpenCode sessions are doing, as
 small moving icons in the top bar and on the empty desktop of a GNOME Shell 46
 Wayland session. This document describes the components, the data flow and the
 reasoning behind each decision.
@@ -144,7 +144,7 @@ The rule is `isWatching` in the pure `lib/core/presence.js`; `focusInfo` in
 
 ## Settings
 
-All settings live in the `org.gnome.shell.extensions.ai-activity-monitor`
+All settings live in the `org.gnome.shell.extensions.glanceagent`
 schema; the README lists every key and its default. The ones that shape the
 architecture are `panel-indicators` and `desktop-tiles` (each surface can be
 switched off), `desktop-play` (roaming), `show-on` (desktop layer or always on

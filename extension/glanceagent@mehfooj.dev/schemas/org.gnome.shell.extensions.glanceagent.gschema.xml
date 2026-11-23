@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <schema id="org.gnome.shell.extensions.ai-activity-monitor" path="/org/gnome/shell/extensions/ai-activity-monitor/">
+  <schema id="org.gnome.shell.extensions.glanceagent" path="/org/gnome/shell/extensions/glanceagent/">
     <key name="edge" type="s">
       <choices>
         <choice value="left"/>

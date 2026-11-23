@@ -20,7 +20,7 @@ class PanelIcon {
     constructor(provider, extensionDir, handlers) {
         this.provider = provider;
         const info = providerInfo(provider);
-        this.button = new PanelMenu.Button(0.5, `AI Activity ${info.name}`, true);
+        this.button = new PanelMenu.Button(0.5, `GlanceAgent ${info.name}`, true);
         // dontCreateMenu still leaves a hidden dummy menu registered with the panel's menu
         // manager; sliding over the clock then switches to the clock's menu and its modal
         // grab swallows the drop. Remove the menu entirely.

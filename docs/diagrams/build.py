@@ -17,7 +17,7 @@ from xml.sax.saxutils import escape
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
-EXT = "extension/ai-activity-monitor@local"
+EXT = "extension/glanceagent@mehfooj.dev"
 
 COL = {
     "blue": ("#a5d8ff", "#4a9eed"), "green": ("#b2f2bb", "#22c55e"), "orange": ("#ffd8a8", "#f59e0b"),
@@ -219,7 +219,7 @@ class Diagram:
 
 # ---------------------------------------------------------------------------
 def d01_mind_map():
-    d = Diagram("01-mind-map", 1500, 960, "AI Activity Monitor: the whole system on one page")
+    d = Diagram("01-mind-map", 1500, 960, "GlanceAgent: the whole system on one page")
     d.box("c", 590, 410, 320, 140, "AI Activity\nMonitor\none GNOME extension\nplus two small adapters", "yellow", 19, "ellipse")
     d.box("in", 40, 90, 430, 200, "1  INPUT: the agents report\n\nClaude Code: a hook script runs on\nevery event, JSON arrives on stdin\nOpenCode: a plugin listens to the\nserver's internal event stream", "blue", 17)
     d.box("tr", 535, 70, 430, 200, "2  TRANSPORT: files in RAM\n\nOne small JSON line per event in\n$XDG_RUNTIME_DIR/ai-activity-monitor\nThe kernel tells us when a file\nchanges (inotify). No network", "teal", 17)
@@ -326,7 +326,7 @@ def d04_code():
     d.box("mot", 1225, 905, 375, 80, f"lib/ui/motion.js ({loc(EXT + '/lib/ui/motion.js')})\nwork motion, attention hop", "orange")
     d.arrow_pts([(820, 540), (820, 490)], "extension.js feeds events in,\nasks what to show", color="#1971c2", sw=3)
     d.arrow_pts([(820, 810), (820, 860)], "extension.js tells the UI what to draw", color="#1971c2", sw=3)
-    d.text("tools", 20, 1015, "TOOLS AND TESTS (not part of the running system): scripts/install.sh, uninstall.sh, claude_hooks.py (safe settings edit), dev-nested.sh and devctl.sh (headless test\nshell), measure.py (performance). tests/: 59 Node tests plus 22 Python tests. stylesheet.css and icons/ are the look.", 15)
+    d.text("tools", 20, 1015, "TOOLS AND TESTS (not part of the running system): scripts/install.sh, uninstall.sh, claude_hooks.py (safe settings edit), dev-nested.sh and devctl.sh (headless test\nshell), measure.py (performance). tests/: 59 Node tests plus 23 Python tests. stylesheet.css and icons/ are the look.", 15)
     d.save()
 
 
@@ -356,13 +356,13 @@ def d05_state_machine():
 def d06_footprint():
     d = Diagram("06-footprint", 1500, 900, "What this system puts on a machine, and how to remove it")
     d.zone("zi", 20, 70, 470, 640, "zblue", "FILES we installed")
-    d.box("f1", 40, 120, 430, 150, "~/.local/share/gnome-shell/\nextensions/ai-activity-monitor@local/\nthe extension: JS, CSS, icons,\nsettings schema", "blue", 16)
+    d.box("f1", 40, 120, 430, 150, "~/.local/share/gnome-shell/\nextensions/glanceagent@mehfooj.dev/\nthe extension: JS, CSS, icons,\nsettings schema", "blue", 16)
     d.box("f2", 40, 300, 430, 120, "~/.local/share/ai-activity-monitor/\naimon_hook.py\ncopy of the Claude hook", "blue", 16)
     d.box("f3", 40, 450, 430, 120, "~/.config/opencode/plugins/\nai-activity-monitor.js\ncopy of the OpenCode plugin", "blue", 16)
     d.box("f4", 40, 600, 430, 90, "source of truth: this\nrepository (git)", "yellow", 16)
     d.zone("ze", 510, 70, 470, 640, "zorange", "SETTINGS we edited")
     d.box("e1", 530, 120, 430, 170, "~/.claude/settings.json\n+ 11 hook entries, each runs\naimon_hook.py. Other hooks kept.\nBackup: settings.json.aimon-backup-*", "orange", 16)
-    d.box("e2", 530, 320, 430, 120, "dconf: org.gnome.shell\nenabled-extensions\n+ ai-activity-monitor@local", "orange", 16)
+    d.box("e2", 530, 320, 430, 120, "dconf: org.gnome.shell\nenabled-extensions\n+ glanceagent@mehfooj.dev", "orange", 16)
     d.box("e3", 530, 470, 430, 120, "dconf: /org/gnome/shell/extensions/\nai-activity-monitor/\nour preferences (positions, switches)", "orange", 16)
     d.zone("zr", 1000, 70, 480, 640, "zgreen", "RUNTIME (temporary)")
     d.box("r1", 1020, 120, 440, 150, "$XDG_RUNTIME_DIR/ai-activity-monitor/\nspool/*.jsonl and .lock\nRAM only, gone at logout or reboot,\ncapped 256 KB per session", "green", 16)

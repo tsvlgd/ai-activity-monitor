@@ -24,7 +24,7 @@ export class Notifier {
         if (this._source)
             return this._source;
         this._source = new MessageTray.Source({
-            title: 'AI Activity',
+            title: 'GlanceAgent',
             icon: new Gio.ThemedIcon({name: 'utilities-terminal-symbolic'}),
         });
         this._source.connect('destroy', () => {

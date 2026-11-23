@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {SessionStore} from '../../extension/ai-activity-monitor@local/lib/core/store.js';
+import {SessionStore} from '../../extension/glanceagent@mehfooj.dev/lib/core/store.js';
 
 let T = 5000;
 const line = (kind, extra = {}) => JSON.stringify({v: 1, ts: (T += extra.dt ?? 1), provider: 'claude-code', session: 's', kind, ...extra});

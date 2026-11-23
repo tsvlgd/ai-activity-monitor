@@ -1,9 +1,11 @@
 {
-  "uuid": "ai-activity-monitor@local",
-  "name": "AI Activity Monitor",
+  "uuid": "glanceagent@mehfooj.dev",
+  "name": "GlanceAgent",
   "description": "Floating edge indicators that show what your Claude Code and OpenCode sessions are doing: working, waiting for approval, completed or failed. Click an indicator for a focus safe activity preview.",
-  "shell-version": ["46"],
-  "settings-schema": "org.gnome.shell.extensions.ai-activity-monitor",
+  "shell-version": [
+    "46"
+  ],
+  "settings-schema": "org.gnome.shell.extensions.glanceagent",
   "version": 1,
-  "url": "https://localhost/ai-activity-monitor"
+  "url": "https://github.com/tsvlgd/ai-activity-monitor"
 }

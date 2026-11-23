@@ -1,10 +1,10 @@
 # AGENTS.md
 
-Guidance for coding agents working in this repository (AI Activity Monitor).
+Guidance for coding agents working in this repository (GlanceAgent).
 
 ## What this is
 
-A GNOME Shell 46 extension (`extension/ai-activity-monitor@local`) plus two
+A GNOME Shell 46 extension (`extension/glanceagent@mehfooj.dev`) plus two
 adapters (`adapters/claude-code`, `adapters/opencode`) that feed it through
 JSONL spool files. Read `docs/ARCHITECTURE.md` and `docs/EVENTS.md` first;
 `docs/GUIDE.md` is the full guide and `docs/DECISIONS.md` holds the decision log.
@@ -80,7 +80,7 @@ Every commit follows [Conventional Commits 1.0](https://www.conventionalcommits.
 ## Commands
 
 ```bash
-npm test          # 59 Node + 22 Python tests, must pass before any change is done
+npm test          # 59 Node + 23 Python tests, must pass before any change is done
 npm run lint      # ESLint
 AIMON_HEADLESS=1 scripts/dev-nested.sh 1600x900
 scripts/devctl.sh state

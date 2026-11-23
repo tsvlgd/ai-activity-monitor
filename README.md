@@ -1,4 +1,4 @@
-# AI Activity Monitor
+# GlanceAgent
 
 A GNOME Shell 46 extension that shows what your Claude Code and OpenCode
 sessions are doing, as small moving icons in the top bar and on the empty
@@ -72,7 +72,7 @@ scripts/install.sh --opencode           # OpenCode plugin
 
 | Step | Changes |
 | --- | --- |
-| `--extension` | Compiles the settings schema, copies the extension to `~/.local/share/gnome-shell/extensions/ai-activity-monitor@local` (replacing any earlier copy) and appends it to the `org.gnome.shell enabled-extensions` setting. The previous value is saved in the extension folder. |
+| `--extension` | Compiles the settings schema, copies the extension to `~/.local/share/gnome-shell/extensions/glanceagent@mehfooj.dev` (replacing any earlier copy) and appends it to the `org.gnome.shell enabled-extensions` setting. The previous value is saved in the extension folder. |
 | `--claude` | Copies the hook to `~/.local/share/ai-activity-monitor/aimon_hook.py` and adds 11 hook entries to `~/.claude/settings.json`. A timestamped backup is written first, existing hooks are kept, and installing twice adds nothing. |
 | `--opencode` | Copies the plugin to `~/.config/opencode/plugins/ai-activity-monitor.js`. |
 
@@ -98,12 +98,12 @@ in to unload the extension from a running Wayland session.
 
 ## Settings
 
-Open the preferences with `gnome-extensions prefs ai-activity-monitor@local`,
+Open the preferences with `gnome-extensions prefs glanceagent@mehfooj.dev`,
 or set keys directly:
 
 ```bash
-gsettings --schemadir ~/.local/share/gnome-shell/extensions/ai-activity-monitor@local/schemas \
-  set org.gnome.shell.extensions.ai-activity-monitor completed-hold-seconds 60
+gsettings --schemadir ~/.local/share/gnome-shell/extensions/glanceagent@mehfooj.dev/schemas \
+  set org.gnome.shell.extensions.glanceagent completed-hold-seconds 60
 ```
 
 | Key | Default | Meaning |
@@ -128,7 +128,7 @@ gsettings --schemadir ~/.local/share/gnome-shell/extensions/ai-activity-monitor@
 ## Develop
 
 ```bash
-npm test                         # 59 Node tests and 22 Python tests
+npm test                         # 59 Node tests and 23 Python tests
 npm run lint                     # ESLint
 AIMON_HEADLESS=1 scripts/dev-nested.sh 1600x900   # headless test shell, own D-Bus session
 scripts/devctl.sh state          # drive it: click <provider>, pointer click X Y, shot <png>
@@ -146,7 +146,7 @@ rules contributors and coding agents follow.
 ## Repository layout
 
 ```
-extension/ai-activity-monitor@local/   the GNOME Shell extension
+extension/glanceagent@mehfooj.dev/   the GNOME Shell extension
   extension.js                           orchestrator: enable and disable
   prefs.js, schemas/, stylesheet.css     preferences, settings schema, styling
   lib/core/                              pure logic: model, store, policy, roaming

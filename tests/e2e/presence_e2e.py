@@ -39,7 +39,7 @@ def set_title(app, title):
     time.sleep(0.4)
 
 def notes(st):
-    return sum(src["count"] for src in st["notifications"] if src["title"] == "AI Activity")
+    return sum(src["count"] for src in st["notifications"] if src["title"] == "GlanceAgent")
 
 def panel(st):
     return next((p for p in st["panel"] if p["provider"] == "claude-code"), None)

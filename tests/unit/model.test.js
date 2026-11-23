@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {SessionStore} from '../../extension/ai-activity-monitor@local/lib/core/store.js';
-import {State, parseEvent, clampText} from '../../extension/ai-activity-monitor@local/lib/core/model.js';
+import {SessionStore} from '../../extension/glanceagent@mehfooj.dev/lib/core/store.js';
+import {State, parseEvent, clampText} from '../../extension/glanceagent@mehfooj.dev/lib/core/model.js';
 
 let T = 1000;
 const ev = (kind, extra = {}) => JSON.stringify({v: 1, ts: extra.ts ?? (T += 1), provider: 'claude-code', session: 's1', kind, ...extra});
@@ -187,7 +187,7 @@ test('idle hint never overrides an open approval', () => {
 });
 
 test('stale working decays to idle; running tools get a longer allowance', async () => {
-    const {STALE_WORKING_SECONDS, STALE_TOOL_SECONDS} = await import('../../extension/ai-activity-monitor@local/lib/core/model.js');
+    const {STALE_WORKING_SECONDS, STALE_TOOL_SECONDS} = await import('../../extension/glanceagent@mehfooj.dev/lib/core/model.js');
     const st = new SessionStore();
     run(st, [ev('session_start'), ev('prompt')]);
     const t0 = st.get('claude-code:s1').updatedAt;

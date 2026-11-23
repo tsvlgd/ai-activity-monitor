@@ -12,7 +12,11 @@
 #                the OpenCode server restarts)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-UUID="ai-activity-monitor@local"
+UUID="glanceagent@mehfooj.dev"
+SCHEMA_PATH="/org/gnome/shell/extensions/glanceagent/"
+# Earlier name of this extension. An install under it is moved over once.
+OLD_UUID="ai-activity-monitor@local"
+OLD_SCHEMA_PATH="/org/gnome/shell/extensions/ai-activity-monitor/"
 EXT_DIR="$HOME/.local/share/gnome-shell/extensions/$UUID"
 DATA_DIR="$HOME/.local/share/ai-activity-monitor"
 CLAUDE_SETTINGS="$HOME/.claude/settings.json"
@@ -27,10 +31,36 @@ for a in "$@"; do
 done
 [ -z "$DO_EXT$DO_CLAUDE$DO_OC" ] && { sed -n '2,15p' "$0"; exit 2; }
 run() { if [ -n "$DRY" ]; then echo "[dry run] $*"; else "$@"; fi; }
+drop_enabled() {  # remove one UUID from org.gnome.shell enabled-extensions
+  local current next
+  current="$(gsettings get org.gnome.shell enabled-extensions)"
+  [[ "$current" == *"$1"* ]] || return 0
+  next="$(python3 -c "import ast,sys; v=ast.literal_eval(sys.argv[1].replace('@as ','')); print(str([x for x in v if x != sys.argv[2]]))" "$current" "$1")"
+  run gsettings set org.gnome.shell enabled-extensions "$next"
+}
+
+# The extension was renamed (new UUID and settings schema, same keys). Carry
+# the user's settings over once, never over settings the new name already has,
+# then retire the old copy so the shell does not load both. The old settings
+# stay in dconf, untouched, as a fallback.
+migrate_old_name() {
+  local old_dir="$HOME/.local/share/gnome-shell/extensions/$OLD_UUID" saved
+  [ -d "$old_dir" ] || [[ "$(gsettings get org.gnome.shell enabled-extensions)" == *"$OLD_UUID"* ]] || return 0
+  echo "moving the earlier install ($OLD_UUID) to $UUID"
+  saved="$(dconf dump "$OLD_SCHEMA_PATH")"
+  if [ -n "$saved" ] && [ -z "$(dconf dump "$SCHEMA_PATH")" ]; then
+    if [ -n "$DRY" ]; then echo "[dry run] copy settings $OLD_SCHEMA_PATH to $SCHEMA_PATH"
+    else printf '%s\n' "$saved" | dconf load "$SCHEMA_PATH"; fi
+  fi
+  drop_enabled "$OLD_UUID"
+  [ -d "$old_dir" ] && run rm -rf "$old_dir"
+  return 0
+}
 
 if [ -n "$DO_EXT" ]; then
   echo "== GNOME Shell extension"
   run glib-compile-schemas "$ROOT/extension/$UUID/schemas"
+  migrate_old_name
   # Replace, do not merge, so files removed upstream do not linger.
   [ -d "$EXT_DIR" ] && run rm -rf "$EXT_DIR"
   run mkdir -p "$EXT_DIR"

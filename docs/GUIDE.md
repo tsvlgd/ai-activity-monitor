@@ -1,4 +1,4 @@
-# Guide: how AI Activity Monitor works
+# Guide: how GlanceAgent works
 
 This guide takes you from the idea to being able to explain, audit and change
 every part of the running system. It is written from the real code in this
@@ -137,10 +137,10 @@ Read this once now, come back whenever a term blocks you.
 ## Reading order for the real code
 
 1. `docs/EVENTS.md` (the contract, about 50 lines)
-2. `extension/ai-activity-monitor@local/lib/core/model.js` (the brain)
+2. `extension/glanceagent@mehfooj.dev/lib/core/model.js` (the brain)
 3. `tests/unit/model.test.js` (the brain's specification, as examples)
 4. `adapters/claude-code/aimon_hook.py` then `adapters/opencode/ai-activity-monitor.js`
-5. `extension/ai-activity-monitor@local/lib/spool.js`, then `extension.js`
+5. `extension/glanceagent@mehfooj.dev/lib/spool.js`, then `extension.js`
 6. The `lib/ui/` files last, because they are the most GNOME specific
 
 Stage 3 explains this order.
@@ -246,7 +246,7 @@ exactly why the layers are separate.
 1. **React to events, do not poll.** The agents tell us when something happens.
    The only timers are slow safety checks (is the agent still alive, every 4 s).
 2. **Keep the brain pure.** Logic that does not touch the desktop can be tested
-   in a second without a desktop. That is how 81 tests (59 Node, 22 Python) run in seconds.
+   in a second without a desktop. That is how 82 tests (59 Node, 23 Python) run in seconds.
 3. **Never break the agent or the desktop.** The hook always exits 0 and prints
    nothing. The extension catches its own errors. If we fail, you lose an icon,
    not your work.
@@ -257,7 +257,7 @@ Run these from the repository root.
 
 ```bash
 # 1. What is installed, and is the extension loaded?
-gnome-extensions info ai-activity-monitor@local | head -5
+gnome-extensions info glanceagent@mehfooj.dev | head -5
 
 # 2. See the real agent processes
 ps -o pid,ppid,etime,comm -C claude,opencode
@@ -760,7 +760,7 @@ for it in `AGENTS.md`.
 | **`/proc/PID/cwd`** | `listProcesses` | OpenCode sessions live in a shared server, so "is a client open in this folder" decides if a session is still attached |
 | **D Bus** | `lib/windows.js` | GNOME Terminal exposes `active-tab` as a remote action. We set it while watching the window title change, and keep the tab whose title matches the agent |
 | **Wayland** | everywhere in the UI | Inside the compositor we may raise windows and draw on top, but we cannot fake mouse input, which is why the test harness uses a virtual pointer device |
-| **gsettings / dconf** | `schemas/`, `prefs.js` | Where positions and switches are stored: `/org/gnome/shell/extensions/ai-activity-monitor/` |
+| **gsettings / dconf** | `schemas/`, `prefs.js` | Where positions and switches are stored: `/org/gnome/shell/extensions/glanceagent/` |
 | **`journalctl`** | debugging | GNOME Shell's log. Our errors appear here |
 
 Trust boundary to be aware of: the extension runs **inside GNOME Shell with no
@@ -779,7 +779,7 @@ removes exactly that.
 ## Which parts have no unit tests, honestly
 
 The brain, the adapters, the installer and the contract between them are fully
-covered (59 Node and 22 Python tests). Everything that needs GNOME Shell
+covered (59 Node and 23 Python tests). Everything that needs GNOME Shell
 (`spool.js`, `notifier.js`, `windows.js`, `desktopstate.js`, the UI,
 `extension.js`) is covered only by running the headless test shell against real
 agents and a virtual pointer (see "How this was verified" in
@@ -798,20 +798,20 @@ scripts/lab.sh fake working && sleep 3 && scripts/lab.sh fake waiting
 sleep 3 && scripts/lab.sh fake done && sleep 3 && scripts/lab.sh clean
 
 # 3. Change one setting and see the effect (completed state now lasts 30 s)
-gsettings --schemadir ~/.local/share/gnome-shell/extensions/ai-activity-monitor@local/schemas \
-  set org.gnome.shell.extensions.ai-activity-monitor completed-hold-seconds 30
+gsettings --schemadir ~/.local/share/gnome-shell/extensions/glanceagent@mehfooj.dev/schemas \
+  set org.gnome.shell.extensions.glanceagent completed-hold-seconds 30
 # undo: set it back to 180
 
 # 4. Break something on purpose, in a scratch copy, and watch a test catch it
-cp extension/ai-activity-monitor@local/lib/core/model.js /tmp/model.js.backup
+cp extension/glanceagent@mehfooj.dev/lib/core/model.js /tmp/model.js.backup
 #   edit lib/core/model.js: comment out the line "if (!isTurnStart && event.ts < s.turnBoundaryTs)"
 #   AND the "return s;" line right under it (both lines, so the file stays valid)
 npm test                       # one or more tests fail: that is the test doing its job
-cp /tmp/model.js.backup extension/ai-activity-monitor@local/lib/core/model.js   # restore
+cp /tmp/model.js.backup extension/glanceagent@mehfooj.dev/lib/core/model.js   # restore
 npm test                       # green again
 
 # 5. Where is every timer? (this is the heart of "what runs in the background")
-grep -n "timeout_add" -r extension/ai-activity-monitor@local/lib extension/ai-activity-monitor@local/extension.js
+grep -n "timeout_add" -r extension/glanceagent@mehfooj.dev/lib extension/glanceagent@mehfooj.dev/extension.js
 ```
 
 ## Check yourself
@@ -1034,18 +1034,18 @@ top -b -d 5 -n 3 -p $(pgrep -o -x gnome-shell) | grep -E "gnome-shell|%Cpu"
 grep -E "VmRSS|VmHWM" /proc/$(pgrep -o -x gnome-shell)/status
 
 # See the timers
-grep -n "timeout_add" -r extension/ai-activity-monitor@local
+grep -n "timeout_add" -r extension/glanceagent@mehfooj.dev
 ```
 
 To see the effect on a real desktop: note the shell's CPU with `top` while an
 agent works, then switch off Play mode in the preferences and compare. The
-preferences window opens with `gnome-extensions prefs ai-activity-monitor@local`.
+preferences window opens with `gnome-extensions prefs glanceagent@mehfooj.dev`.
 
 ## If it ever feels slow
 
 1. Switch off **Play on the empty desktop** (`desktop-play`).
 2. Switch off **Animate working state** (`animate-working`).
-3. Switch off the extension: `gnome-extensions disable ai-activity-monitor@local`.
+3. Switch off the extension: `gnome-extensions disable glanceagent@mehfooj.dev`.
 4. Remove everything: `scripts/uninstall.sh`.
 
 Each step is stronger than the previous one, and each is reversible.
@@ -1083,7 +1083,7 @@ repository root, prove the main claims.
 grep -rnE "fetch\(|Soup|Gio\.Socket|XMLHttp|WebSocket|urllib|requests|socket\." extension adapters
 
 # 2. The installed copy is exactly the source. Expect: no differences.
-diff -rq extension/ai-activity-monitor@local ~/.local/share/gnome-shell/extensions/ai-activity-monitor@local
+diff -rq extension/glanceagent@mehfooj.dev ~/.local/share/gnome-shell/extensions/glanceagent@mehfooj.dev
 
 # 3. Which Claude Code settings are touched? Expect: 11 entries, all others untouched.
 python3 scripts/claude_hooks.py status ~/.claude/settings.json
@@ -1091,7 +1091,7 @@ python3 scripts/claude_hooks.py status ~/.claude/settings.json
 # 4. What would uninstall remove? Nothing is deleted with --dry-run.
 scripts/uninstall.sh --dry-run
 
-# 5. Is everything proven? Expect: 59 Node and 22 Python tests passing, no lint errors.
+# 5. Is everything proven? Expect: 59 Node and 23 Python tests passing, no lint errors.
 npm test && npm run lint
 
 # 6. What does it cost? (Stage 4)

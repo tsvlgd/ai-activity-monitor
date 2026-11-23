@@ -8,7 +8,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {SessionStore} from '../../extension/ai-activity-monitor@local/lib/core/store.js';
+import {SessionStore} from '../../extension/glanceagent@mehfooj.dev/lib/core/store.js';
 import {mapEvent, createTracker, createWriter} from '../../adapters/opencode/ai-activity-monitor.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');

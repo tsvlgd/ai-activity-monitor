@@ -1778,14 +1778,14 @@
    "updated": 1,
    "link": null,
    "locked": false,
-   "text": "TOOLS AND TESTS (not part of the running system): scripts/install.sh, uninstall.sh, claude_hooks.py (safe settings edit), dev-nested.sh and devctl.sh (headless test\nshell), measure.py (performance). tests/: 59 Node tests plus 22 Python tests. stylesheet.css and icons/ are the look.",
+   "text": "TOOLS AND TESTS (not part of the running system): scripts/install.sh, uninstall.sh, claude_hooks.py (safe settings edit), dev-nested.sh and devctl.sh (headless test\nshell), measure.py (performance). tests/: 59 Node tests plus 23 Python tests. stylesheet.css and icons/ are the look.",
    "fontSize": 15,
    "fontFamily": 2,
    "textAlign": "left",
    "verticalAlign": "top",
    "baseline": 13,
    "containerId": null,
-   "originalText": "TOOLS AND TESTS (not part of the running system): scripts/install.sh, uninstall.sh, claude_hooks.py (safe settings edit), dev-nested.sh and devctl.sh (headless test\nshell), measure.py (performance). tests/: 59 Node tests plus 22 Python tests. stylesheet.css and icons/ are the look.",
+   "originalText": "TOOLS AND TESTS (not part of the running system): scripts/install.sh, uninstall.sh, claude_hooks.py (safe settings edit), dev-nested.sh and devctl.sh (headless test\nshell), measure.py (performance). tests/: 59 Node tests plus 23 Python tests. stylesheet.css and icons/ are the look.",
    "lineHeight": 1.25,
    "autoResize": true
   }

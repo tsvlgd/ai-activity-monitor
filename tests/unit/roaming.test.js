@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {isParked, roamers, release} from '../../extension/ai-activity-monitor@local/lib/core/roaming.js';
+import {isParked, roamers, release} from '../../extension/glanceagent@mehfooj.dev/lib/core/roaming.js';
 
 const tiles = [{provider: 'claude-code'}, {provider: 'opencode'}];
 

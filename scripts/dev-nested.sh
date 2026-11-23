@@ -8,7 +8,7 @@
 #      AIMON_DEV_DIR    throwaway state dir (default $XDG_RUNTIME_DIR/aimon-dev)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-UUID="ai-activity-monitor@local"
+UUID="glanceagent@mehfooj.dev"
 DEV="${AIMON_DEV_DIR:-${XDG_RUNTIME_DIR}/aimon-dev}"
 SIZE="${1:-1600x900}"
 # AIMON_HEADLESS=1 runs on a virtual monitor with no window on the host screen.

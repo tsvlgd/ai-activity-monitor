@@ -3,7 +3,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 
-import {isWatching, tabText, sameTitle} from '../../extension/ai-activity-monitor@local/lib/core/presence.js';
+import {isWatching, tabText, sameTitle} from '../../extension/glanceagent@mehfooj.dev/lib/core/presence.js';
 
 const claude = (extra = {}) => ({provider: 'claude-code', cwd: '/home/u/Dev/ai-activity-monitor',
     projectDir: '/home/u/Dev/ai-activity-monitor', title: 'AI activity monitor results', ...extra});
