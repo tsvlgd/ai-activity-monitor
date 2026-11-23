@@ -18,10 +18,11 @@ export const PreviewCard: React.FC<{
 	current: string;
 	log: LogLine[];
 	primaryState?: 'normal' | 'hover' | 'active';
+	dismissState?: 'normal' | 'hover' | 'active';
 	opacity?: number;
 	scale?: number;
 	dy?: number;
-}> = ({x, y, provider, title, subtitle, state, current, log, primaryState = 'normal', opacity = 1, scale = 1, dy = 0}) => {
+}> = ({x, y, provider, title, subtitle, state, current, log, primaryState = 'normal', dismissState = 'normal', opacity = 1, scale = 1, dy = 0}) => {
 	const chip = CHIP[state];
 	const primaryBg = primaryState === 'hover' ? '#3a404d' : primaryState === 'active' ? '#1f232b' : '#2b303b';
 	return (
@@ -115,7 +116,7 @@ export const PreviewCard: React.FC<{
 						fontSize: 14.5,
 						fontWeight: 600,
 						color: '#262a33',
-						background: 'rgba(120, 130, 145, 0.12)',
+						background: `rgba(120, 130, 145, ${dismissState === 'active' ? 0.28 : dismissState === 'hover' ? 0.2 : 0.12})`,
 					}}
 				>
 					Dismiss

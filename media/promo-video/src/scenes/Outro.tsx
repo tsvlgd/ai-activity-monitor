@@ -94,7 +94,7 @@ export const Outro: React.FC = () => {
 	const gnomeAt = wf('outro', 'GNOME');
 	const drawsAt = wf('outro', 'draws');
 	const cloudAt = wf('outro', 'No');
-	const endAt = wf('outro', 'AI') - 4;
+	const endAt = wf('outro', 'GlanceAgent') - 4;
 
 	const flowOut = ease(frame, endAt - 6, endAt + 4);
 	const end = ease(frame, endAt, endAt + 14);
@@ -166,13 +166,13 @@ export const Outro: React.FC = () => {
 							textAlign: 'center',
 							fontFamily: FONT_UI,
 							fontWeight: 700,
-							fontSize: 116,
+							fontSize: 136,
 							letterSpacing: -2.5,
 							color: '#1f232b',
 							transform: `translateY(${(1 - end) * 24}px)`,
 						}}
 					>
-						AI Activity Monitor
+						GlanceAgent
 					</div>
 					<div
 						style={{

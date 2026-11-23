@@ -19,11 +19,8 @@ export const Intro: React.FC = () => {
 	const gap = 70;
 	const rowW = tiles.length * (SIZE + 18) + (tiles.length - 1) * gap;
 	const x0 = (W - rowW) / 2;
-	const words = [
-		{w: 'AI', at: wf('intro', 'AI')},
-		{w: 'Activity', at: wf('intro', 'Activity')},
-		{w: 'Monitor', at: wf('intro', 'Monitor')},
-	];
+	const nameAt = wf('intro', 'GlanceAgent');
+	const letters = 'GlanceAgent'.split('');
 	const tagAt = wf('intro', 'A');
 	const linuxAt = wf('intro', 'Linux');
 	const tag = ease(frame, tagAt, tagAt + 10);
@@ -63,19 +60,21 @@ export const Intro: React.FC = () => {
 					gap: 30,
 					fontFamily: FONT_UI,
 					fontWeight: 700,
-					fontSize: 112,
-					letterSpacing: -2.5,
+					fontSize: 136,
+					letterSpacing: -3,
 					color: '#1f232b',
 				}}
 			>
-				{words.map(({w, at}) => {
-					const p = ease(frame, at, at + 9);
-					return (
-						<span key={w} style={{opacity: p, transform: `translateY(${(1 - p) * 30}px)`, display: 'inline-block'}}>
-							{w}
-						</span>
-					);
-				})}
+				<span style={{display: 'inline-block'}}>
+					{letters.map((ch, i) => {
+						const p = ease(frame, nameAt + i * 1.2, nameAt + i * 1.2 + 9);
+						return (
+							<span key={i} style={{opacity: p, transform: `translateY(${(1 - p) * 34}px)`, display: 'inline-block'}}>
+								{ch}
+							</span>
+						);
+					})}
+				</span>
 			</div>
 			<div
 				style={{

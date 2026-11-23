@@ -1,18 +1,19 @@
-# AI Activity Monitor promo: script and storyboard
+# GlanceAgent promo: script and storyboard (v2)
 
-1920 x 1080, 30 fps, 1416 frames (47.2 s). Voice: `en-US-AndrewNeural` (rate +4%), generated into `voice/out/`.
-Each scene lasts its clip duration plus 0.35 s; the outro gets 1.8 s more for the end card.
+1920 x 1080, 30 fps, 1394 frames (46.5 s). Voice: `en-US-AndrewNeural` (rate +4%), generated into `voice/out/` (v1 clips are kept in `voice/out_v1/`).
+Each voiced scene lasts its clip duration plus 0.35 s; the outro gets 1.8 s more for the end card. A silent 3 s interlude sits between the top bar and the states scene.
 Word timings come from `src/timeline.json` and drive every key action through `wf(scene, word)`.
 
 | # | Scene | Start frame | Frames | Seconds |
 |---|-------|-------------|--------|---------|
 | 1 | hook | 0 | 158 | 5.27 |
 | 2 | problem | 158 | 168 | 5.60 |
-| 3 | intro | 326 | 140 | 4.67 |
-| 4 | topbar | 466 | 276 | 9.20 |
-| 5 | desktop | 742 | 291 | 9.70 |
-| 6 | click | 1033 | 136 | 4.53 |
-| 7 | outro | 1169 | 247 | 8.23 |
+| 3 | intro | 326 | 117 | 3.90 |
+| 4 | topbar | 443 | 144 | 4.80 |
+| 5 | interlude (silent) | 587 | 90 | 3.00 |
+| 6 | matters | 677 | 273 | 9.10 |
+| 7 | click | 950 | 216 | 7.20 |
+| 8 | outro | 1166 | 228 | 7.60 |
 
 Frame numbers below are local to the scene.
 
@@ -21,72 +22,81 @@ Frame numbers below are local to the scene.
 > You run AI coding agents in the terminal. Then you switch windows, and lose track.
 
 * Desktop with the wallpaper and the light MacTahoe top bar (workspace pill, clock `Fri 14 Nov 20:45`, wifi, volume, battery).
-* A `gnome-terminal` window (`#1C1F24`, JetBrains Mono, user palette, traffic lights) types `claude`, shows the welcome box, then types the prompt `refactor the auth module and run the tests` character by character. Tool lines stream in from frame 58.
-* "switch" (84): a light browser window with a generic docs page slides in from the right and covers the terminal.
+* A `gnome-terminal` window (`#1C1F24`, JetBrains Mono, the user's palette, traffic lights) types `claude`, shows the welcome box, then types `refactor the auth module and run the tests` character by character. Tool lines stream in from frame 58.
+* "switch" (84): a light browser window with a generic docs page slides in and covers the terminal.
 * "lose" (117): the browser blurs and a faint question mark appears where the terminal was.
 
 ## 2 Problem
 
 > Is it still working? Does it need your approval? Did it finish, or fail? So you keep checking.
 
-* The browser blurs behind four large state chips that pop in on their words: "Still working?" (working, 15), "Needs approval?" (waiting, 53), "Finished?" (completed, 83), "Failed?" (error, 101). Chip colours are the `.aimon-chip-*` colours.
-* "keep" (130): chips fall away, the windows flicker browser, terminal, browser every 5 frames with a GNOME style Alt + Tab switcher.
+* Four large state chips pop in on their words: "Still working?" (15), "Needs approval?" (53), "Finished?" (83), "Failed?" (101), in the `.aimon-chip-*` colours.
+* "keep" (130): the chips fall away and the windows flicker browser, terminal, browser with a GNOME style Alt + Tab switcher.
 
 ## 3 Intro
 
-> Meet AI Activity Monitor. A tiny layer on your Linux desktop.
+> Meet GlanceAgent. A tiny layer on your Linux desktop.
 
-* Soft blurred desktop. Three provider tiles pop in (3, 8, 13): Claude Code (working, bobbing), OpenCode (waiting, hopping), Codex (completed, hopping).
-* The title appears word by word on "AI" (14), "Activity" (24), "Monitor" (39).
-* Tagline on "A" (66); "Linux desktop" is underlined on "Linux" (94).
+* Soft blurred desktop. Three provider tiles pop in (3, 8, 13).
+* "GlanceAgent" (10): the name rises in letter by letter.
+* "A" (43): the tagline fades up; "Linux desktop" is underlined on "Linux" (71).
 
 ## 4 Top bar
 
-> Every agent gets a live icon in the top bar, visible over any app. Working, it moves. Needs you, it turns amber. Done, it bounces.
+> Every agent gets a live icon in the top bar, visible over any app.
 
-* A maximised browser under the top bar. Three icons pop into the top bar just left of the clock on "icon" (39), with a brief highlight ring.
+* A maximised browser under the top bar. On "icon" (39) three icons pop into the top bar just left of the clock (Claude Code, OpenCode, Codex), with a brief green ring.
 * "top" (57): the camera zooms 2.4x into the top bar; the page underneath softens.
-* "Working" (135): Claude Code dot turns green and the icon starts the work motion (380 ms each way). Inset: `Bash(npm test)`, `Running tests…`.
-* "amber" (205): OpenCode dot turns amber, the attention bounce starts, a "need you!" bubble appears under the icon and a GNOME notification drops in: "OpenCode needs your approval". Inset: permission prompt.
-* "bounces" (238): Codex dot turns blue, "done!" bubble, attention bounce (170 ms hop, 460 ms bounce, 120 ms rest). Inset: `All tests passed`.
+* All three icons show the work motion (380 ms each way) with green dots. No state changes here.
 
-## 5 Desktop
+## 5 Interlude (silent, no captions)
 
-> On an empty desktop, Claude Code, OpenCode and Codex roam around, bump into each other, and say hi. Drag one to a corner, and it stays.
+* Crossfades in over the last 8 frames of the top bar scene, with a whoosh.
+* The empty desktop with the wallpaper. Three desktop tiles at 126 px (1.5x the v1 size) are already roaming, all working.
+* Physics is a pure function of the frame (`src/lib/sim.ts`, memoised). Velocities were tuned with a seeded search so two bumps land inside the cut: Claude Code and OpenCode at frame 15 ("hi OpenCode!", "hey Claude!"), OpenCode and Codex at frame 52 ("yo Codex!", "hey OpenCode!"). Each bump has a bump sound. A new greeting replaces the tile's previous bubble.
+* No cursor, no drag, no parked tile. Crossfades out under the next scene.
 
-* Empty desktop with the wallpaper. Tiles (84 px) pop in on their names: Claude Code (44), OpenCode (75), Codex (97).
-* "roam" (112): tiles start moving. Physics is a pure function of the frame (`src/lib/sim.ts`): fixed step integration, wall reflection and elastic equal mass collisions, precomputed once and memoised. Velocities were tuned with a seeded search so the bumps land on the voice.
-* Bump at 137: "hi OpenCode!" and "hey Claude!". Bump at 185: "yo Codex!" and "hey OpenCode!".
-* "Drag" (209): the cursor grabs the Claude Code tile and drops it in the top right corner at 238. The tile is a fixed obstacle from then on; the others keep roaming and bounce off it.
-* "stays" (255): a small "parked" label with a pin appears under it.
+## 6 Matters
 
-## 6 Click
+> When Claude Code needs your approval, it turns amber. When OpenCode asks you to pick an option, it tells you. When Codex is done, it bounces.
 
-> Click an icon to see what it is doing, and jump straight back to its terminal.
+* Back to the zoomed top bar over the browser; all three icons start out working.
+* "approval" (37): a small Claude terminal inset shows the cause (`Update(src/auth/session.ts)`, "Do you want to make this edit?").
+* "amber" (74): the Claude Code dot turns amber, the attention bounce starts (170 ms hop, 460 ms bounce, 120 ms rest), a "need you!" bubble appears and a GNOME banner drops in: "Claude Code needs your approval", "Allow edit to src/auth/session.ts?".
+* "asks" (122): OpenCode inset with the question and options.
+* "option" (144): the OpenCode dot turns amber, attention bounce, "need you!" bubble, banner "OpenCode has a question", "Which database should we use?". The Claude bubble and banner step aside first so nothing overlaps.
+* "Codex" (198): Codex inset `All tests passed`.
+* "done" (214): the Codex dot turns blue (`#6688cc`), "done!" bubble, attention bounce, which is in motion as the voice says "bounces".
 
-* The roaming tiles glide to a stop. The cursor clicks the OpenCode tile (8) and the preview card opens beside it (11): header icon, "OpenCode", "auth-service · 2m", chip "Working", "Running npm test", dark log box with three lines, buttons "Open in Terminal" and "Dismiss". The camera zooms 1.35x onto the card.
-* "jump" (69): the cursor clicks "Open in Terminal", the card closes, the camera pulls back and the OpenCode terminal window slides to the front showing the test run.
+## 7 Click (all on top bar icons)
 
-## 7 Outro
+> Click an icon to see what it needs. Open in Terminal takes you straight to that prompt. Dismiss, and it stops bouncing.
 
-> Small hooks send events. A GNOME extension draws them. No cloud. AI Activity Monitor.
+* The zoomed top bar with Claude Code and OpenCode amber and bouncing, Codex blue and bouncing.
+* "icon" (10): the cursor clicks the Claude Code top bar icon (pressed highlight). The preview card drops down under the icon: Claude Code, "auth-service · 1m", chip "Needs you" in the waiting colours, "Approve: Edit session.ts", a dark log with three recent lines, buttons "Open in Terminal" and "Dismiss".
+* "Open" (64): the cursor clicks "Open in Terminal", the card closes and the Claude terminal slides to the front with a Claude Code permission prompt: "Edit file src/auth/session.ts", a four line diff, "Do you want to make this edit to session.ts?" and the options "1. Yes", "2. Yes, and don't ask again this session", "3. No, and tell Claude what to do differently". The selected option pulses on "prompt" (120).
+* 132: the terminal slides away. The cursor clicks the bouncing Codex icon (147); its card shows chip "Done", "All tests passed" and the test log.
+* 168, just before "stops": the cursor clicks "Dismiss". The card closes, the Codex icon settles to still within 150 ms with a brief blue ring, and keeps its blue dot, while the other two keep bouncing. The cursor fades away.
 
-* Flow on a soft desktop: "agent hooks" (12) to "events in memory" (26) to "GNOME extension" (54) to the three tiles (78), with animated dots on the arrows.
+## 8 Outro
+
+> Small hooks send events. A GNOME extension draws them. No cloud. GlanceAgent.
+
+* Flow on a soft desktop: "agent hooks" (12) to "events in memory" (26) to "GNOME extension" (54) to the three tiles (78).
 * "No" (107): a dark "No cloud. Everything stays local." badge.
-* End card (131): the three tiles, "AI Activity Monitor" and "Linux · GNOME Shell". Held to the end. No URL.
+* End card at 131, landing on "GlanceAgent" (135): the three tiles, "GlanceAgent" and "Linux · GNOME Shell". Held to the end. No URL.
 
 ## Audio
 
-* Voice per scene from `public/vo/*.mp3` at full volume.
-* Sound effects from `public/sfx/` (pop, click, whoosh, bump, ding) at volume 0.2 to 0.35, only when the file exists.
+* Voice per scene from `public/vo/*.mp3` at full volume; the interlude has no voice.
+* Sound effects from `public/sfx/` (pop, click, whoosh, bump, ding) at volume 0.18 to 0.4, only when the file exists.
 * Ambient bed `sfx/bed.wav` at 0.25 with a 1 s fade in and a 1.5 s fade out (prop `bedVolume`).
 
 ## Captions
 
-Burned in, bottom centre, dark rounded pill. Pages break at sentence ends or at a comma once a page is long enough, so a page stays within two lines. The spoken word is highlighted in green; upcoming words are dimmed.
+Burned in, bottom centre, dark rounded pill. Pages break at sentence ends or at a comma once a page is long enough, so a page stays within two lines. The spoken word is highlighted in green. No captions in the interlude.
 
-## Props
+## Props and compositions
 
-* `wallpaper`: `'user'` (default, `public/wallpaper.png`) or `'neutral'` (original look alike: light gradient with a faint wireframe box). The `PromoNeutral` composition uses `'neutral'`.
-* `captions`: boolean, default true.
-* `bedVolume`: number, default 0.25.
+* `Promo`: the user's wallpaper (`public/wallpaper.png`). `PromoNeutral`: the original look alike wallpaper (light gradient with a faint wireframe box).
+* `captions`: boolean, default true. `bedVolume`: number, default 0.25.

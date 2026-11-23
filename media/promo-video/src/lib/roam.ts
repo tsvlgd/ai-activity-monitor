@@ -1,41 +1,25 @@
-import {SimParams, simulateMemo, SimTileId} from './sim';
-import {scene, wf} from './timeline';
+import {SimParams, simulateMemo} from './sim';
+import {INTERLUDE_FRAMES, XFADE} from './timeline';
 import {FPS, W} from '../theme';
 
-export const TILE = 84;
+// Desktop tiles in the interlude: 1.5x the size used before, so they read at 1080p.
+export const TILE = 126;
 
-// Desktop scene local frames drive the simulation; the click scene continues it.
-export const ROAM = {
-	appear: {claude: wf('desktop', 'Claude'), opencode: wf('desktop', 'OpenCode'), codex: wf('desktop', 'Codex')} as Record<SimTileId, number>,
-	roamFrom: wf('desktop', 'roam'),
-	grab: wf('desktop', 'Drag'),
-	release: wf('desktop', 'corner') + 8,
-	stays: wf('desktop', 'stays'),
-};
-
-export const PARK = {x: W - TILE - 30 - 40, y: 64};
-
+// The sim frame is the interlude Sequence frame, which starts XFADE frames
+// before the cut (crossfade in) and ends XFADE frames after it.
 export const simParams = (): SimParams => ({
 	size: TILE,
-	bounds: {x0: 40, y0: 64, x1: W - TILE - 30 - 40, y1: 786},
-	start: {claude: {x: 560, y: 360}, opencode: {x: 918, y: 500}, codex: {x: 1276, y: 360}},
-	// Tuned with a seeded search so the bumps land on "bump" and "say hi".
-	velocity: {claude: {x: 190, y: 242}, opencode: {x: -237, y: 114}, codex: {x: -158, y: -242}},
-	roamFrom: ROAM.roamFrom,
-	grabFrame: ROAM.grab,
-	releaseFrame: ROAM.release,
-	parkAt: PARK,
-	frames: scene('desktop').frames + 40,
+	bounds: {x0: 40, y0: 64, x1: W - TILE - 40 - 30, y1: 904},
+	start: {claude: {x: 600, y: 650}, opencode: {x: 1000, y: 400}, codex: {x: 1450, y: 300}},
+	// Tuned with a seeded search: bumps land at sim frames 23 and 60, and the
+	// third tile stays clear of each pair while their bubbles show.
+	velocity: {claude: {x: 364, y: 66}, opencode: {x: 10, y: 336}, codex: {x: 176, y: 295}},
+	roamFrom: -12, // already roaming at full speed when the cut opens
+	frames: INTERLUDE_FRAMES + 2 * XFADE + 4,
 	fps: FPS,
 });
 
 export const getSim = () => simulateMemo(simParams());
-
-// Click scene: tiles glide to a stop over the first 12 frames (continuous velocity).
-export const clickSimFrame = (f: number) => {
-	const base = scene('desktop').frames;
-	return f <= 12 ? base + f - (f * f) / 24 : base + 6;
-};
 
 export const SAY: Record<string, [string, string]> = {
 	'claude-opencode': ['hi OpenCode!', 'hey Claude!'],

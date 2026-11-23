@@ -33,7 +33,9 @@ export const Tile: React.FC<{
 	pressed?: boolean;
 	lift?: number; // extra shadow while dragged
 	showSide?: boolean;
-}> = ({provider, size, x, y, state, bob = 0, count = 1, scale = 1, opacity = 1, pressed = false, lift = 0, showSide = true}) => {
+	dotSize?: number;
+	countSize?: number;
+}> = ({provider, size, x, y, state, bob = 0, count = 1, scale = 1, opacity = 1, pressed = false, lift = 0, showSide = true, dotSize = 11, countSize = 15}) => {
 	const st = TILE_STYLE[provider];
 	return (
 		<div
@@ -65,9 +67,9 @@ export const Tile: React.FC<{
 				<Logo provider={provider} size={Math.round(size * 0.6)} />
 			</div>
 			{showSide ? (
-				<div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, width: SIDE_W - 7}}>
-					<div style={{width: 11, height: 11, borderRadius: 6, background: STATE[state]}} />
-					<div style={{fontFamily: FONT_UI, fontSize: 15, fontWeight: 700, color: '#4f5664'}}>{count}</div>
+				<div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, minWidth: SIDE_W - 7}}>
+					<div style={{width: dotSize, height: dotSize, borderRadius: dotSize / 2, background: STATE[state]}} />
+					<div style={{fontFamily: FONT_UI, fontSize: countSize, fontWeight: 700, color: '#4f5664'}}>{count}</div>
 				</div>
 			) : null}
 		</div>

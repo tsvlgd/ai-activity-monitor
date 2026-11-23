@@ -14,9 +14,9 @@ export type SimParams = {
 	start: Record<SimTileId, Vec>;
 	velocity: Record<SimTileId, Vec>; // px per second once roaming
 	roamFrom: number; // frame at which the tiles start to move
-	grabFrame: number; // frame at which the cursor grabs claude
-	releaseFrame: number; // frame at which claude is dropped
-	parkAt: Vec; // drop position (top left)
+	grabFrame?: number; // frame at which the cursor grabs claude (optional)
+	releaseFrame?: number; // frame at which claude is dropped
+	parkAt?: Vec; // drop position (top left)
 	frames: number; // how many frames to precompute
 	fps: number;
 };
@@ -34,11 +34,14 @@ const BUMP_COOLDOWN = 36; // frames before the same pair can greet again
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 export const dragPosition = (p: SimParams, grabPos: Vec, frame: number): Vec => {
-	const t = Math.min(1, Math.max(0, (frame - p.grabFrame) / (p.releaseFrame - p.grabFrame)));
+	const g = p.grabFrame ?? 0;
+	const rel = p.releaseFrame ?? g + 1;
+	const park = p.parkAt ?? grabPos;
+	const t = Math.min(1, Math.max(0, (frame - g) / (rel - g)));
 	const e = easeInOut(t);
 	// A slight arc so the drag feels hand made.
 	const lift = Math.sin(Math.PI * t) * -40;
-	return {x: grabPos.x + (p.parkAt.x - grabPos.x) * e, y: grabPos.y + (p.parkAt.y - grabPos.y) * e + lift};
+	return {x: grabPos.x + (park.x - grabPos.x) * e, y: grabPos.y + (park.y - grabPos.y) * e + lift};
 };
 
 export const simulate = (p: SimParams): SimResult => {
@@ -68,14 +71,14 @@ export const simulate = (p: SimParams): SimResult => {
 		// Ease velocity in over the first 12 frames of roaming.
 		if (f >= p.roamFrom) {
 			const k = Math.min(1, (f - p.roamFrom + 1) / 12);
-			if (f - p.roamFrom < 12) {
+			if (f - p.roamFrom < 12 || f === 0) {
 				for (const id of IDS) {
 					vel[id] = {x: p.velocity[id].x * k, y: p.velocity[id].y * k};
 				}
 			}
 		}
 
-		const claudeKinematic = f >= p.grabFrame; // held by the cursor, then parked
+		const claudeKinematic = p.grabFrame !== undefined && f >= p.grabFrame; // held by the cursor, then parked
 		if (f === p.grabFrame) grabPos = {...pos.claude};
 
 		for (let s = 0; s < SUBSTEPS; s++) {

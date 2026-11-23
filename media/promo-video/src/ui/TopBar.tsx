@@ -17,6 +17,9 @@ export type PanelIconSpec = {
 	motion: MotionKind;
 	appearAt?: number;
 	bubble?: {text: string; inAt: number; outAt?: number};
+	stopAt?: number; // acknowledged: the motion settles to still over 150 ms
+	pressed?: boolean;
+	hover?: boolean;
 };
 
 const Wifi = () => (
@@ -40,7 +43,11 @@ const Battery = () => (
 
 const PanelIcon: React.FC<{spec: PanelIconSpec; x: number; frame: number}> = ({spec, x, frame}) => {
 	const s = spec.appearAt === undefined ? 1 : popSpring(frame, spec.appearAt, 11);
-	const y = motionY(spec.motion, frame, spec.stateAt ?? 0, 3);
+	let y = motionY(spec.motion, frame, spec.stateAt ?? 0, 3);
+	if (spec.stopAt !== undefined && frame >= spec.stopAt) {
+		const y0 = motionY(spec.motion, spec.stopAt, spec.stateAt ?? 0, 3);
+		y = y0 * (1 - Math.min(1, (frame - spec.stopAt) / 4.5));
+	}
 	const dotPop = spec.stateAt !== undefined ? popSpring(frame, spec.stateAt, 8) : 1;
 	return (
 		<div
@@ -56,8 +63,10 @@ const PanelIcon: React.FC<{spec: PanelIconSpec; x: number; frame: number}> = ({s
 				justifyContent: 'center',
 				gap: 2,
 				paddingTop: 2,
-				transform: `scale(${s})`,
+				transform: `scale(${s * (spec.pressed ? 0.92 : 1)})`,
 				opacity: Math.min(1, s * 1.5),
+				borderRadius: 9,
+				background: spec.pressed ? 'rgba(43, 48, 59, 0.16)' : spec.hover ? 'rgba(43, 48, 59, 0.09)' : 'transparent',
 			}}
 		>
 			<div style={{transform: `translateY(${y}px)`}}>

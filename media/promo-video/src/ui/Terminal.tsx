@@ -28,7 +28,8 @@ export const Terminal: React.FC<{
 	cursorOn?: boolean;
 	fontSize?: number;
 	style?: React.CSSProperties;
-}> = ({frame, title, lines, cursor = true, cursorOn = true, fontSize = 19, style}) => (
+	children?: React.ReactNode; // extra content after the lines (rich blocks)
+}> = ({frame, title, lines, cursor = true, cursorOn = true, fontSize = 19, style, children}) => (
 	<WindowShell frame={frame} dark style={style}>
 		<div style={{position: 'absolute', inset: 0, background: TERM.bg}} />
 		<div
@@ -97,6 +98,7 @@ export const Terminal: React.FC<{
 					) : null}
 				</div>
 			))}
+			{children}
 		</div>
 	</WindowShell>
 );
