@@ -61,3 +61,18 @@ test('opencode tab matches by its session title', () => {
     assert.equal(isWatching(s, term('OC | Fix the parser')), true);
     assert.equal(isWatching(s, term('OC | Something else')), false);
 });
+
+test('a detached session is watched only when the tab title matches exactly', () => {
+    // Claude Code's client can run under a helper that systemd adopted, so no
+    // window is an ancestor. The screenshot case: the user sits on that tab.
+    const det = (title, extra = {}) => ({title, owns: false, detached: true, terminal: true, siblings: 0, ...extra});
+    assert.equal(isWatching(claude(), det('◐ AI activity monitor results')), true);
+    assert.equal(isWatching(claude(), det('✳ AI activity monitor results')), true);
+    // another tab, a shell, no session title, or a non terminal window: not sure
+    assert.equal(isWatching(claude(), det('✳ Linux AI activity monitor')), false);
+    assert.equal(isWatching(claude(), det('Terminal')), false);
+    assert.equal(isWatching(claude({title: ''}), det('✳ AI activity monitor results')), false);
+    assert.equal(isWatching(claude(), det('✳ AI activity monitor results', {terminal: false})), false);
+    // a session owned by a different window is never rescued by its title
+    assert.equal(isWatching(claude(), {title: '✳ AI activity monitor results', owns: false, detached: false, terminal: true}), false);
+});
