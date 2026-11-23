@@ -1,7 +1,8 @@
 # Log
 
-- 2026-11-24: Disk emergency (/home full from test images and 12 GB build cache); added disk guard, cache cap, per run image removal and scripts/cleanup-ci.sh (D20)
-- 2026-11-24: Phase 2 done: e2e passes on GNOME 49 (Fedora 43) in Docker via scripts/container-test.sh
+- 2026-11-23: PR #5 merged (container tests, distro images, disk safety); Sunday plan written to memory/active-task.md
+- 2026-11-23: Disk emergency (/home full from test images and 12 GB build cache); added disk guard, cache cap, per run image removal and scripts/cleanup-ci.sh (D20)
+- 2026-11-23: Phase 2 done: e2e passes on GNOME 49 (Fedora 43) in Docker via scripts/container-test.sh
 - 2026-11-23: Layered GNOME compatibility build agreed as the next workstream (memory/active-task.md); nothing built yet
 - 2026-11-23: Presence fix and GlanceAgent rename merged to main (6baf87f, 773e916), license GPL-2.0-or-later, install migration tested in a sandbox; live desktop moved to the new UUID
 - 2026-11-23: Presence fix (quiet while watching, 4 hops) built, tested (59 Node, 22 Python, 18 e2e), installed live; memory tree created; agentglance research saved (docs/research/agentglance.md)

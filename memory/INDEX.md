@@ -9,13 +9,12 @@ in `docs/ARCHITECTURE.md`, decisions in `docs/DECISIONS.md`, rules in `AGENTS.md
 - Presence fix for detached sessions and the held icon crash fix are on main; the live install has only the presence files; log out and in to load; neither seen on screen yet. See `presence-and-panel.md`.
 - On main: presence fix 6baf87f (D15, D16), rename to GlanceAgent `glanceagent@mehfooj.dev` 773e916 (D17), license GPL-2.0-or-later (D18).
 - Live desktop installed as `glanceagent@mehfooj.dev` (old UUID migrated); loads after the next login; not yet checked on screen.
-- Layered GNOME compatibility build (versions 46 to 51, distros, terminals, Docker and CI) agreed, NOT started.
+- Layered GNOME build: phases 0 to 2 and disk safety on main (PR #5); phase 3 about 80 percent on branch `feat/gnome-46-51`; phases 4 to 6 not started.
 - Promo video v3 rendered and backed up in `media/promo-video/` (0d7bc8c); name GlanceAgent used in the video only.
 
 ## Next
-- Start the layered build: `memory/active-task.md` phase 2 (Fedora 43 container running the e2e check).
+- Sunday 2026-11-29: follow "Sunday checklist" in `memory/active-task.md` (finish phase 3, then start phase 4).
 - Install the panel fix into the live extension, then verify both fixes on screen after a login.
-- `ci/distro-matrix` (f140711, Fedora container e2e) is the other session's branch, not on main: open its PR when it is ready.
 - Video: owner to review v3; optional fixes listed in `memory/promo-video.md`.
 
 ## Map
