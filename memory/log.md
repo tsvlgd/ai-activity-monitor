@@ -7,3 +7,4 @@
 - 2026-11-23: Repo now keeps only the final promo video v3 MP4; video source and other renders git ignored, kept in ~/Dev/workspace/aimon-video
 - 2026-11-23: Owner kept the name GlanceAgent despite AgentGlance (macOS); AGENTS.md now requires typed branches (feat, fix, docs, ...) and Conventional Commits
 - 2026-11-23: Owner standing rule: agents open the PR, review, test and merge to main themselves, and keep local main equal to origin/main (AGENTS.md Git workflow)
+- 2026-11-23: PRs 1 to 3 merged: presence for detached sessions, agent merges own PRs, held icon destroyed crash fix and stress script. Blank top bar cause still unknown.
