@@ -317,6 +317,11 @@ export class EdgeIndicators {
         let changed = false;
         for (const [provider, tile] of this._tiles) {
             if (!groups.has(provider)) {
+                // The session can end while its tile is held: release the stage grab.
+                if (this._press?.tile === tile) {
+                    this._press.grab?.dismiss();
+                    this._press = null;
+                }
                 tile.destroy();
                 this._tiles.delete(provider);
                 changed = true;
