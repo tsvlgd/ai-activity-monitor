@@ -128,7 +128,7 @@ gsettings --schemadir ~/.local/share/gnome-shell/extensions/glanceagent@mehfooj.
 ## Develop
 
 ```bash
-npm test                         # 59 Node tests and 23 Python tests
+npm test                         # 60 Node tests and 30 Python tests
 npm run lint                     # ESLint
 AIMON_HEADLESS=1 scripts/dev-nested.sh 1600x900   # headless test shell, own D-Bus session
 scripts/devctl.sh state          # drive it: click <provider>, pointer click X Y, shot <png>
@@ -137,6 +137,33 @@ scripts/measure.py shell         # CPU and memory with and without the extension
 scripts/lab.sh watch             # print real agent events live
 python3 docs/diagrams/build.py   # rebuild the diagrams
 ```
+
+### Distro tests in containers
+
+```bash
+scripts/container-test.sh fedora-43   # one distro: build its image, run the end to end check
+scripts/container-matrix.sh           # every distro in ci/containers/, one result line each
+scripts/cleanup-ci.sh --dry-run       # what the cleanup would remove
+scripts/cleanup-ci.sh                 # remove test images, our dangling layers, old logs
+```
+
+Each image in `ci/containers/` runs GNOME Shell headless with the extension and
+`tests/e2e/presence_e2e.py` inside Docker. Images take 1 to 4 GB each, so disk
+use is kept bounded automatically:
+
+* A disk guard runs before every build. Under 6 GB free on the disk that holds
+  Docker's data it cleans up first; still under 3 GB, it stops with a message
+  instead of filling the disk.
+* After each build the Docker build cache is trimmed to 3 GB, and after each
+  run, pass or fail, the distro's image is removed. Set `AIMON_KEEP_IMAGES=1`
+  to keep it for debugging.
+* `scripts/container-matrix.sh` prints the free space after every distro, so a
+  slow leak is visible.
+* The cleanup only removes images tagged `glanceagent-test`, layers labelled
+  `org.glanceagent.test=1`, build cache, and test logs in this repository
+  (screenshots stay). It never touches volumes, containers or other images.
+  Build cache is shared by every build on the machine and cannot be split by
+  project; it holds only rebuildable layers.
 
 The test shell runs in its own D-Bus session with private settings, so it never
 touches the real desktop. `lib/devcontrol.js` is enabled only when

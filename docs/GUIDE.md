@@ -246,7 +246,7 @@ exactly why the layers are separate.
 1. **React to events, do not poll.** The agents tell us when something happens.
    The only timers are slow safety checks (is the agent still alive, every 4 s).
 2. **Keep the brain pure.** Logic that does not touch the desktop can be tested
-   in a second without a desktop. That is how 82 tests (59 Node, 23 Python) run in seconds.
+   in a second without a desktop. That is how 90 tests (60 Node, 30 Python) run in seconds.
 3. **Never break the agent or the desktop.** The hook always exits 0 and prints
    nothing. The extension catches its own errors. If we fail, you lose an icon,
    not your work.
@@ -779,7 +779,7 @@ removes exactly that.
 ## Which parts have no unit tests, honestly
 
 The brain, the adapters, the installer and the contract between them are fully
-covered (59 Node and 23 Python tests). Everything that needs GNOME Shell
+covered (60 Node and 30 Python tests). Everything that needs GNOME Shell
 (`spool.js`, `notifier.js`, `windows.js`, `desktopstate.js`, the UI,
 `extension.js`) is covered only by running the headless test shell against real
 agents and a virtual pointer (see "How this was verified" in
@@ -1091,7 +1091,7 @@ python3 scripts/claude_hooks.py status ~/.claude/settings.json
 # 4. What would uninstall remove? Nothing is deleted with --dry-run.
 scripts/uninstall.sh --dry-run
 
-# 5. Is everything proven? Expect: 59 Node and 23 Python tests passing, no lint errors.
+# 5. Is everything proven? Expect: 60 Node and 30 Python tests passing, no lint errors.
 npm test && npm run lint
 
 # 6. What does it cost? (Stage 4)

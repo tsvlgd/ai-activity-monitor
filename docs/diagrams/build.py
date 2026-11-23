@@ -326,7 +326,7 @@ def d04_code():
     d.box("mot", 1225, 905, 375, 80, f"lib/ui/motion.js ({loc(EXT + '/lib/ui/motion.js')})\nwork motion, attention hop", "orange")
     d.arrow_pts([(820, 540), (820, 490)], "extension.js feeds events in,\nasks what to show", color="#1971c2", sw=3)
     d.arrow_pts([(820, 810), (820, 860)], "extension.js tells the UI what to draw", color="#1971c2", sw=3)
-    d.text("tools", 20, 1015, "TOOLS AND TESTS (not part of the running system): scripts/install.sh, uninstall.sh, claude_hooks.py (safe settings edit), dev-nested.sh and devctl.sh (headless test\nshell), measure.py (performance). tests/: 59 Node tests plus 23 Python tests. stylesheet.css and icons/ are the look.", 15)
+    d.text("tools", 20, 1015, "TOOLS AND TESTS (not part of the running system): scripts/install.sh, uninstall.sh, claude_hooks.py (safe settings edit), dev-nested.sh and devctl.sh (headless test\nshell), measure.py (performance). tests/: 60 Node tests plus 30 Python tests. stylesheet.css and icons/ are the look.", 15)
     d.save()
 
 
