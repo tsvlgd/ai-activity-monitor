@@ -20,6 +20,18 @@ OUT="$ROOT/ci/out/$DISTRO"
 
 "$ROOT/scripts/cleanup-ci.sh" --guard
 
+# Remove the image however the run ends, Ctrl+C included: an interrupted run
+# used to leave its 1 to 4 GB image behind.
+remove_image() {
+  [ "${AIMON_KEEP_IMAGES:-}" = 1 ] && return 0
+  # A stopped run can leave its container for a moment; only ones made from
+  # our own image match this filter.
+  "$ENGINE" ps -aq --filter "ancestor=$IMAGE" 2>/dev/null | xargs -r "$ENGINE" rm -f >/dev/null 2>&1 || true
+  "$ENGINE" rmi "$IMAGE" >/dev/null 2>&1 || true
+}
+trap remove_image EXIT
+trap 'exit 130' INT TERM
+
 mkdir -p "$OUT"
 chmod 777 "$OUT"  # the container's test user writes results here
 # The label lets cleanup-ci.sh find our dangling layers and nobody else's.
@@ -31,9 +43,7 @@ fi
 rc=0
 "$ENGINE" run --rm -v "$ROOT:/src:ro" -v "$OUT:/out" "$IMAGE" bash /src/ci/container-e2e.sh || rc=$?
 
-if [ "${AIMON_KEEP_IMAGES:-}" != 1 ]; then
-  "$ENGINE" rmi "$IMAGE" >/dev/null 2>&1 || true
-fi
+remove_image
 free="$(df --output=avail -B1G "$("$ENGINE" info --format '{{.DockerRootDir}}' 2>/dev/null || echo /home)" | tail -n 1 | tr -d ' ')"
 echo "== $DISTRO: $([ "$rc" = 0 ] && echo PASS || echo FAIL), ${free} GB free"
 exit "$rc"

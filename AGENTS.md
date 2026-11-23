@@ -96,7 +96,7 @@ Every commit follows [Conventional Commits 1.0](https://www.conventionalcommits.
 ## Commands
 
 ```bash
-npm test          # 60 Node + 30 Python tests, must pass before any change is done
+npm test          # 60 Node + 31 Python tests, must pass before any change is done
 npm run lint      # ESLint
 AIMON_HEADLESS=1 scripts/dev-nested.sh 1600x900
 scripts/devctl.sh state
