@@ -92,6 +92,12 @@ for _ in range(50):
 time.sleep(1.5)
 term_child = int(open(os.path.join(STATE, "org.test.Terminal.pid")).read())
 set_title("org.test.Editor", "notes.txt - Editor")
+set_title("org.test.Terminal", "Terminal")
+# Both windows must be mapped before any scenario: a window that maps late
+# takes focus and silently changes what the user "watches". Focusing each by
+# title, confirmed by the shell, proves it is there.
+focus("notes.txt")
+focus("Terminal")
 # Both sessions run in the same terminal process, like two gnome-terminal tabs.
 RUN = str(int(time.time()))
 S1, S2 = f"s1-{RUN}", f"s2-{RUN}"

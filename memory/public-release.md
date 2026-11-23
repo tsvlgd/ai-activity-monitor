@@ -9,6 +9,7 @@ Full research and distro matrix: `docs/research/agentglance.md`.
 - 2026-11-23: Do NOT build these agentglance features: phone connectivity, model and token tracking, display templates, inline diffs.
 - 2026-11-23: Builds and tests via Docker and CI; the agent owns the CI design.
 - 2026-11-23: GNOME only for now, common and newest versions (46 to 51) plus terminals; non GNOME tray app deferred. Work starts from `active-task.md` phase 2.
+- 2026-11-24: KDE and other non GNOME desktops: ignore until the GNOME version is finished and published. Then the tray app (reusing adapters and `lib/core`) is the NEXT workstream, so KDE, Mint, XFCE, COSMIC and Hyprland users get a real product, not a half port. A native Plasma widget only later, on demand.
 - Sound effects and more features: discuss after the fixes, not before.
 - 2026-11-23: License GPL-2.0-or-later for the whole repo, owner let the agent choose (D18). Logos excluded from it.
 - 2026-11-23: Name GlanceAgent, UUID `glanceagent@mehfooj.dev`, schema `org.gnome.shell.extensions.glanceagent` (D17). Flagged to owner: the name is AgentGlance reversed, a confusion and trademark risk; free to change until published.
