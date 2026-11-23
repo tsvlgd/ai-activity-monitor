@@ -38,6 +38,10 @@ def ctl(*args):
 
 
 def nested_bus():
+    # dconf writes below must never reach the real session: refuse unless the
+    # control path is set and the bus found is not the login session's bus.
+    if not os.environ.get("AIMON_DEV_CONTROL"):
+        raise SystemExit("set AIMON_DEV_CONTROL to this run's private control file")
     pid = subprocess.run(["pgrep", "-f", "^gnome-shell --headless"], capture_output=True, text=True).stdout.split()
     for p in pid:
         try:
@@ -45,7 +49,10 @@ def nested_bus():
         except OSError:
             continue
         if any(e.startswith(f"AIMON_DEV_CONTROL={os.environ.get('AIMON_DEV_CONTROL', '')}") for e in env):
-            return next(e.split("=", 1)[1] for e in env if e.startswith("DBUS_SESSION_BUS_ADDRESS="))
+            bus = next(e.split("=", 1)[1] for e in env if e.startswith("DBUS_SESSION_BUS_ADDRESS="))
+            if bus.endswith(f"{RT}/bus") or f"unix:path={RT}/bus" in bus:
+                raise SystemExit("refusing: that is the real session bus")
+            return bus
     raise SystemExit("nested shell not found")
 
 
