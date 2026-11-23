@@ -5,3 +5,9 @@ __pycache__/
 node_modules/
 *.tmp
 .claude/
+
+# Promo video: only the final render is kept in the repo; the source lives outside it.
+media/promo-video/*
+!media/promo-video/out/
+media/promo-video/out/*
+!media/promo-video/out/glanceagent-promo-v3.mp4
