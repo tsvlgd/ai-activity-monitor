@@ -2,7 +2,7 @@
 
 // Claude Code titles its tab with a status glyph: a spinner while working,
 // a star when idle.
-const CLAUDE_GLYPH = /^[\u2733\u2736\u273b\u273d\u2722\u00b7*\u25d0-\u25d3\u2800-\u28ff]/;
+import {CLAUDE_GLYPH} from './core/presence.js';
 
 function claudeTabScore(session, title) {
     if (!CLAUDE_GLYPH.test(title))

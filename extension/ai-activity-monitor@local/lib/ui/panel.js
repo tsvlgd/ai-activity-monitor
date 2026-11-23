@@ -76,8 +76,12 @@ class PanelIcon {
         return this._motion.mode;
     }
 
+    get hops() {
+        return this._motion.hops;
+    }
+
     update(agg, {animate}) {
-        if (this._state !== agg.state && this._state !== null && SAYINGS[agg.state])
+        if (this._state !== agg.state && this._state !== null && SAYINGS[agg.state] && !agg.acknowledged)
             this.say(SAYINGS[agg.state]);
         if (this._state !== agg.state) {
             for (const a of [this.dot, this._tipDot]) {
@@ -90,7 +94,7 @@ class PanelIcon {
         this._tipLabel.text = hoverPhrase(agg);
         this.button.accessible_name = this._tipLabel.text;
         this._syncTooltip();
-        this._motion.set(animate ? motionFor(agg.state, agg.acknowledged) : 'none');
+        this._motion.set(animate ? motionFor(agg.state, agg.acknowledged) : 'none', agg.attentionSince);
     }
 
     suppressTooltip(on) {

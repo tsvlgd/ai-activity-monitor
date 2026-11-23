@@ -99,6 +99,27 @@ export class DevControl {
                 result = {shot: path};
                 break;
             }
+            case 'tray-clear':
+                // Start a scenario with an empty tray (a source keeps at most
+                // three notifications, so leftovers would skew counts).
+                for (const src of Main.messageTray.getSources())
+                    src.destroy();
+                result = {cleared: true};
+                break;
+            case 'focus': {
+                // focus <text>: activate the first normal window whose title
+                // contains text, the way a user clicking it would.
+                const want = args.join(' ');
+                const w = global.get_window_actors().map(a => a.meta_window)
+                    .find(m => m && (m.get_title() ?? '').includes(want));
+                if (!w) {
+                    result = {error: `no window titled like ${want}`};
+                    break;
+                }
+                Main.activateWindow(w);
+                result = {focused: w.get_title()};
+                break;
+            }
             case 'fullscreen': {
                 // Toggle fullscreen on the focused window (simulates a video player).
                 const w = global.display.focus_window;

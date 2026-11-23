@@ -223,3 +223,36 @@ test('dismiss acknowledges without hiding: state kept, attention stops, new stat
     run(st, [ev('prompt'), ev('turn_complete')]);
     assert.equal(st.get('claude-code:s1').acknowledged, false);
 });
+
+test('attentionSince moves when a second session needs the user, so the icon hops again', () => {
+    const st = new SessionStore();
+    const at = (session, kind, ts) => st.ingestLine(JSON.stringify({v: 1, ts, provider: 'claude-code', session, kind}), {now: ts});
+    at('a', 'session_start', 10);
+    at('b', 'session_start', 10);
+    at('a', 'prompt', 11);
+    at('b', 'prompt', 11);
+    at('a', 'turn_complete', 40);
+    const first = st.byProvider().get('claude-code').attentionSince;
+    assert.equal(first, 40);
+    at('b', 'permission', 50);
+    assert.equal(st.byProvider().get('claude-code').attentionSince, 50);
+    // Seen sessions no longer ask: acknowledging both clears the episode.
+    st.acknowledge('claude-code:a');
+    st.acknowledge('claude-code:b');
+    const agg = st.byProvider().get('claude-code');
+    assert.equal(agg.acknowledged, true);
+    assert.equal(agg.attentionSince, 0);
+});
+
+test('a new attention state is news again after the previous one was seen', () => {
+    const st = new SessionStore();
+    const at = (kind, ts) => st.ingestLine(JSON.stringify({v: 1, ts, provider: 'claude-code', session: 's', kind}), {now: ts});
+    at('session_start', 1);
+    at('prompt', 2);
+    at('permission', 3);
+    st.acknowledge('claude-code:s');
+    assert.equal(st.get('claude-code:s').acknowledged, true);
+    at('tool_end', 4);
+    at('turn_complete', 30);
+    assert.equal(st.get('claude-code:s').acknowledged, false);
+});

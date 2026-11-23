@@ -185,7 +185,7 @@ class ProviderTile {
 
     update(agg, {animate}) {
         const state = agg.state;
-        if (this._state !== state && this._state !== null && SAYINGS[state])
+        if (this._state !== state && this._state !== null && SAYINGS[state] && !agg.acknowledged)
             this.say(SAYINGS[state]);
         if (this._state !== state) {
             for (const cls of [this.dot, this._tipDot]) {
@@ -200,7 +200,7 @@ class ProviderTile {
         this._tipLabel.text = hoverPhrase(agg);
         this.button.accessible_name = `${this._tipLabel.text}. ${agg.primary.detail || ''}`.trim();
         this._syncTooltip();
-        this._motion.set(animate ? motionFor(state, agg.acknowledged) : 'none');
+        this._motion.set(animate ? motionFor(state, agg.acknowledged) : 'none', agg.attentionSince);
     }
 
     suppressTooltip(on) {
@@ -243,6 +243,10 @@ class ProviderTile {
 
     get motion() {
         return this._motion.mode;
+    }
+
+    get hops() {
+        return this._motion.hops;
     }
 
     destroy() {

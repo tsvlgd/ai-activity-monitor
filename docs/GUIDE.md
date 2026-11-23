@@ -246,7 +246,7 @@ exactly why the layers are separate.
 1. **React to events, do not poll.** The agents tell us when something happens.
    The only timers are slow safety checks (is the agent still alive, every 4 s).
 2. **Keep the brain pure.** Logic that does not touch the desktop can be tested
-   in a second without a desktop. That is how 67 tests (49 Node, 18 Python) run in seconds.
+   in a second without a desktop. That is how 81 tests (59 Node, 22 Python) run in seconds.
 3. **Never break the agent or the desktop.** The hook always exits 0 and prints
    nothing. The extension catches its own errors. If we fail, you lose an icon,
    not your work.
@@ -680,7 +680,7 @@ Three details in the reducer that matter most:
 | `lib/ui/indicators.js` | 616 | The desktop tiles: one actor per agent, hover label, drag with a pointer grab. A dragged tile is parked at its saved position and stops roaming; a double click frees it. Play mode moves the unparked tiles, which collide with each other and with parked tiles, with speech bubbles |
 | `lib/ui/panel.js` | 341 | The top bar icons: placed anywhere in the left, centre or right section, drag to move, saved slots, and a "done" or "needs you" bubble when a result or question arrives |
 | `lib/ui/preview.js` | 309 | The click card (380 px wide), built once and updated in place, with a click catcher underneath so any outside click closes it |
-| `lib/ui/motion.js` | 123 | Shared motion: `work` (continuous up and down), `attention` (a hop plus a continuous bounce with a 120 ms rest between hops), `none` |
+| `lib/ui/motion.js` | 123 | Shared motion: `work` (continuous up and down), `attention` (four hops with a bounce and a 120 ms rest between them, then still until the next attention), `none` |
 
 Why the card is "built once, updated in place": rebuilding the whole card on
 every event destroys the buttons, so a click that lands between press and
@@ -779,7 +779,7 @@ removes exactly that.
 ## Which parts have no unit tests, honestly
 
 The brain, the adapters, the installer and the contract between them are fully
-covered (49 Node and 18 Python tests). Everything that needs GNOME Shell
+covered (59 Node and 22 Python tests). Everything that needs GNOME Shell
 (`spool.js`, `notifier.js`, `windows.js`, `desktopstate.js`, the UI,
 `extension.js`) is covered only by running the headless test shell against real
 agents and a virtual pointer (see "How this was verified" in
@@ -1091,7 +1091,7 @@ python3 scripts/claude_hooks.py status ~/.claude/settings.json
 # 4. What would uninstall remove? Nothing is deleted with --dry-run.
 scripts/uninstall.sh --dry-run
 
-# 5. Is everything proven? Expect: 49 Node and 18 Python tests passing, no lint errors.
+# 5. Is everything proven? Expect: 59 Node and 22 Python tests passing, no lint errors.
 npm test && npm run lint
 
 # 6. What does it cost? (Stage 4)

@@ -125,6 +125,42 @@ def terminal_info():
     return info or None
 
 
+# Events where the extension must know which tab is the session's: it stays
+# quiet when the user is already looking at that tab.
+TITLED_KINDS = ("session_start", "prompt", "permission", "input_needed", "turn_complete", "turn_error")
+TITLE_TAIL_BYTES = 64 * 1024
+_AI_TITLE = re.compile(r'"type"\s*:\s*"ai-title"')
+
+
+def session_title(transcript_path):
+    """Latest title Claude Code shows in the terminal tab, or "".
+
+    Claude Code appends {"type":"ai-title","aiTitle":...} records to the
+    transcript and puts that text in the tab title. Only the tail is read, so
+    the cost stays flat however long the transcript grows.
+    """
+    if not isinstance(transcript_path, str) or not transcript_path:
+        return ""
+    try:
+        with open(transcript_path, "rb") as fh:
+            fh.seek(0, os.SEEK_END)
+            size = fh.tell()
+            fh.seek(max(0, size - TITLE_TAIL_BYTES))
+            tail = fh.read().decode("utf-8", "replace")
+    except OSError:
+        return ""
+    for line in reversed(tail.splitlines()):
+        if not _AI_TITLE.search(line):
+            continue
+        try:
+            title = json.loads(line).get("aiTitle")
+        except (ValueError, AttributeError):
+            continue  # the first line of the tail may be cut in half
+        if isinstance(title, str) and title.strip():
+            return first_line(title, 90)
+    return ""
+
+
 def map_event(payload):
     """Return (kind, extra) for a Claude Code hook payload, or None to skip."""
     name = payload.get("hook_event_name", "")
@@ -239,6 +275,10 @@ def build_event(payload, now=None):
     # Subagent hooks share the session id; agent_id tells their prompts apart.
     if isinstance(payload.get("agent_id"), str) and payload["agent_id"]:
         event["agent"] = payload["agent_id"][:64]
+    if kind in TITLED_KINDS and "agent" not in event:
+        title = session_title(payload.get("transcript_path"))
+        if title:
+            event["title"] = title
     if kind in ("session_start", "prompt"):
         pid = find_agent_pid()
         if pid:

@@ -307,9 +307,10 @@ def d04_code():
     d.box("pl", 540, 120, 530, 120, f"adapters/opencode/ai-activity-monitor.js ({loc('adapters/opencode/ai-activity-monitor.js')} lines)\nJS plugin. Subscribes to the event bus,\nmaps to the same line, one writer per server", "blue")
     d.box("ev", 1090, 120, 510, 120, "docs/EVENTS.md: THE CONTRACT\nboth adapters write this schema,\nthe extension reads it", "yellow")
     d.zone("z2", 20, 310, 1600, 180, "zpurple", "PURE CORE: no GNOME imports, unit tested in plain Node")
-    d.box("mo", 40, 360, 520, 110, f"lib/core/model.js ({loc(EXT + '/lib/core/model.js')} lines)\nevent kinds, parseEvent, reduceSession:\nTHE state machine. aggregateProvider", "purple")
-    d.box("st", 600, 360, 480, 110, f"lib/core/store.js ({loc(EXT + '/lib/core/store.js')} lines)\nSessionStore: holds all sessions,\nfeeds events in, keeps notify memory", "purple")
-    d.box("po", 1120, 360, 480, 110, f"lib/core/policy.js ({loc(EXT + '/lib/core/policy.js')} lines)\ndecideNotification: when is a\nnotification worth showing", "purple")
+    d.box("mo", 40, 360, 400, 110, f"lib/core/model.js ({loc(EXT + '/lib/core/model.js')} lines)\nevent kinds, parseEvent, reduceSession:\nTHE state machine. aggregateProvider", "purple")
+    d.box("st", 460, 360, 360, 110, f"lib/core/store.js ({loc(EXT + '/lib/core/store.js')} lines)\nSessionStore: holds all sessions,\nfeeds events in, keeps notify memory", "purple")
+    d.box("po", 840, 360, 360, 110, f"lib/core/policy.js ({loc(EXT + '/lib/core/policy.js')} lines)\ndecideNotification: when is a\nnotification worth showing", "purple")
+    d.box("ps", 1220, 360, 380, 110, f"lib/core/presence.js ({loc(EXT + '/lib/core/presence.js')} lines)\nisWatching: is the user already\nlooking at this session's tab", "purple")
     d.zone("z3", 20, 540, 1600, 270, "zgreen", "GNOME GLUE: talks to the operating system and the shell")
     d.box("ex", 40, 590, 400, 200, f"extension.js ({loc(EXT + '/extension.js')} lines)\nTHE ORCHESTRATOR\nenable() builds everything,\ndisable() tears it all down.\nTimers: liveness 4 s, decay 15 s", "green")
     d.box("sw", 470, 590, 345, 90, f"lib/spool.js ({loc(EXT + '/lib/spool.js')})\nwatch folder (inotify), read lines", "green")
@@ -325,7 +326,7 @@ def d04_code():
     d.box("mot", 1225, 905, 375, 80, f"lib/ui/motion.js ({loc(EXT + '/lib/ui/motion.js')})\nwork motion, attention hop", "orange")
     d.arrow_pts([(820, 540), (820, 490)], "extension.js feeds events in,\nasks what to show", color="#1971c2", sw=3)
     d.arrow_pts([(820, 810), (820, 860)], "extension.js tells the UI what to draw", color="#1971c2", sw=3)
-    d.text("tools", 20, 1015, "TOOLS AND TESTS (not part of the running system): scripts/install.sh, uninstall.sh, claude_hooks.py (safe settings edit), dev-nested.sh and devctl.sh (headless test\nshell), measure.py (performance). tests/: 44 Node tests plus 18 Python tests. stylesheet.css and icons/ are the look.", 15)
+    d.text("tools", 20, 1015, "TOOLS AND TESTS (not part of the running system): scripts/install.sh, uninstall.sh, claude_hooks.py (safe settings edit), dev-nested.sh and devctl.sh (headless test\nshell), measure.py (performance). tests/: 59 Node tests plus 22 Python tests. stylesheet.css and icons/ are the look.", 15)
     d.save()
 
 

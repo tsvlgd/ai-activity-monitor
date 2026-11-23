@@ -151,3 +151,53 @@ class RedactionVectorTests(unittest.TestCase):
         for text, secret in vectors["leaks"]:
             self.assertNotIn(secret, hook.redact(text), text)
         self.assertEqual(hook.redact("mkdir -p build/out"), "mkdir -p build/out")
+
+
+class SessionTitleTests(unittest.TestCase):
+    """The tab title lets the extension stay quiet while the user watches the tab."""
+
+    def transcript(self, lines):
+        fd, path = tempfile.mkstemp(suffix=".jsonl")
+        with os.fdopen(fd, "w") as fh:
+            fh.write("".join(lines))
+        self.addCleanup(os.unlink, path)
+        return path
+
+    def test_latest_ai_title_wins(self):
+        path = self.transcript([
+            json.dumps({"type": "ai-title", "aiTitle": "Old name"}) + "\n",
+            json.dumps({"type": "user", "message": "hi"}) + "\n",
+            json.dumps({"type": "ai-title", "aiTitle": "Linux AI activity monitor"}) + "\n",
+            json.dumps({"type": "assistant", "message": "ok"}) + "\n",
+        ])
+        self.assertEqual(hook.session_title(path), "Linux AI activity monitor")
+
+    def test_only_the_tail_is_read(self):
+        # A title older than the tail window is not found, so a huge
+        # transcript never costs more than one small read.
+        filler = json.dumps({"type": "assistant", "message": "x" * 1000}) + "\n"
+        path = self.transcript([json.dumps({"type": "ai-title", "aiTitle": "Too old"}) + "\n"]
+                               + [filler] * 80)
+        self.assertEqual(hook.session_title(path), "")
+
+    def test_missing_or_bad_transcript_is_empty(self):
+        self.assertEqual(hook.session_title(None), "")
+        self.assertEqual(hook.session_title("/nonexistent/x.jsonl"), "")
+        path = self.transcript(['{"type":"ai-title","aiTitle":\n', "not json\n"])
+        self.assertEqual(hook.session_title(path), "")
+
+    def test_title_sent_on_attention_events_only(self):
+        path = self.transcript([json.dumps({"type": "ai-title", "aiTitle": "My task"}) + "\n"])
+        stop = hook.build_event(p("Stop", transcript_path=path), now=1.0)
+        self.assertEqual(stop["title"], "My task")
+        perm = hook.build_event(p("PermissionRequest", tool_name="Bash", tool_input={"command": "ls"},
+                                  transcript_path=path), now=1.0)
+        self.assertEqual(perm["title"], "My task")
+        # Tool events fire constantly and need no title.
+        tool = hook.build_event(p("PreToolUse", tool_name="Bash", tool_input={"command": "ls"},
+                                  transcript_path=path), now=1.0)
+        self.assertNotIn("title", tool)
+        # Subagents share the session; their transcript is not the tab's.
+        sub = hook.build_event(p("PermissionRequest", tool_name="Bash", tool_input={},
+                                 agent_id="a1", transcript_path=path), now=1.0)
+        self.assertNotIn("title", sub)

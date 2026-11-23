@@ -15,7 +15,8 @@ import {providerInfo} from './lib/providers.js';
 import {Notifier} from './lib/notifier.js';
 import {EdgeIndicators} from './lib/ui/indicators.js';
 import {PreviewCard} from './lib/ui/preview.js';
-import {focusTerminal, openTerminal} from './lib/windows.js';
+import {focusTerminal, openTerminal, focusInfo} from './lib/windows.js';
+import {isWatching} from './lib/core/presence.js';
 import {DevControl} from './lib/devcontrol.js';
 import {DesktopState} from './lib/desktopstate.js';
 import {release} from './lib/core/roaming.js';
@@ -26,6 +27,13 @@ const DECAY_SECONDS = 15;
 const ENDED_LINGER_MS = 2500;
 const NO_PID_STALE_SECONDS = 12 * 3600;
 const DETACH_GRACE_SECONDS = 20;
+const ATTENTION_STATES = new Set([State.WAITING, State.COMPLETED, State.ERROR]);
+
+// A state the user should look at, newly reached (or a different question).
+function enteredAttention(prev, s) {
+    return ATTENTION_STATES.has(s.state) &&
+        (prev?.state !== s.state || prev?.waitingKind !== s.waitingKind);
+}
 
 export default class AiActivityMonitorExtension extends Extension {
     enable() {
@@ -95,6 +103,12 @@ export default class AiActivityMonitorExtension extends Extension {
         this._dev = devPath && devPath.startsWith(devRoot) && !devPath.includes('..')
             ? new DevControl(devPath, this._devApi()) : null;
 
+        // Switching to the session's window or tab counts as seeing it.
+        this._focusWin = null;
+        this._focusTitleId = 0;
+        this._focusId = global.display.connect('notify::focus-window', () => this._trackFocus());
+        this._trackFocus();
+
         this._decayId = GLib.timeout_add_seconds(GLib.PRIORITY_LOW, DECAY_SECONDS, () => {
             if (this._store.decayAll().length || this._preview.isOpen)
                 this._scheduleRender();
@@ -111,6 +125,9 @@ export default class AiActivityMonitorExtension extends Extension {
         this._livenessId = this._decayId = this._renderId = 0;
         this._settings.disconnect(this._settingsId);
         St.Settings.get().disconnect(this._animId);
+        global.display.disconnect(this._focusId);
+        this._untrackTitle();
+        this._focusId = 0;
         this._dev?.destroy();
         this._dev = null;
         this._desktop.destroy();
@@ -167,15 +184,16 @@ export default class AiActivityMonitorExtension extends Extension {
                 previewRect: rect(this._preview.actor),
                 input: {modalCount: Main.modalCount, grabActor: String(global.stage.get_grab_actor?.() ?? null),
                     dateMenuOpen: Main.panel.statusArea.dateMenu?.menu?.isOpen ?? null},
-                panel: this._panel.icons.map(i => ({provider: i.provider, motion: i.motion, rect: rect(i.button),
+                panel: this._panel.icons.map(i => ({provider: i.provider, motion: i.motion, hops: i.hops, rect: rect(i.button),
                     tooltip: i.tooltip.visible})),
-                tiles: this._indicators.tiles.map(t => ({provider: t.provider, shown: t.shown, bouncing: t.bouncing, motion: t.motion,
+                tiles: this._indicators.tiles.map(t => ({provider: t.provider, shown: t.shown, bouncing: t.bouncing, motion: t.motion, hops: t.hops,
                     covered: this._desktop.isCovered(t.rect), rect: rect(t.wrapper), tooltip: t.tooltip.visible,
                     bubble: t.bubble.visible ? t.bubble.text : null})),
                 buttons: Object.fromEntries([...this._preview.actionButtons].map(([k, b]) => [k, rect(b)])),
                 groups: [...this._store.byProvider({hideIdle: this._settings.get_boolean('hide-idle')}).values()]
                     .filter(g => this._indicators.tileFor(g.provider)).map(g => ({
-                    provider: g.provider, state: g.state, count: g.count,
+                    provider: g.provider, state: g.state, count: g.count, acknowledged: g.acknowledged,
+                    sessions: g.sessions.map(x => ({id: x.id, state: x.state, acknowledged: x.acknowledged})),
                     detail: g.primary.detail,
                     tile: rect(this._indicators.tileFor(g.provider).button),
                 })),
@@ -253,8 +271,15 @@ export default class AiActivityMonitorExtension extends Extension {
             this._files.set(session.key, path);
             if (prev?.state === State.WAITING && session.state !== State.WAITING)
                 this._notifier.withdraw(session.key, [NotifyKind.APPROVAL, NotifyKind.INPUT]);
-            if (notify)
+            if (!silent && enteredAttention(prev, session) && this._watching(session)) {
+                // The user is looking at this session's tab: no bounce, no
+                // bubble, no notification. It counts as seen.
+                this._store.acknowledge(session.key);
+                if (notify)
+                    this._store.lastNotified.delete(session.key);
+            } else if (notify) {
                 this._notifier.notify(session, notify);
+            }
             if (session.state === State.ENDED)
                 this._schedulePrune(session.key, silent ? 0 : ENDED_LINGER_MS);
         }
@@ -269,11 +294,59 @@ export default class AiActivityMonitorExtension extends Extension {
     // after an unlock or a shell restart, post it again.
     _repostPending() {
         for (const s of this._store.liveSessions()) {
-            if (s.state === State.WAITING) {
+            if (s.state === State.WAITING && !this._watching(s)) {
                 this._notifier.notify(s, {kind: s.waitingKind === 'input' ? NotifyKind.INPUT : NotifyKind.APPROVAL, urgent: false});
                 this._store.lastNotified.set(s.key, {kind: s.waitingKind === 'input' ? NotifyKind.INPUT : NotifyKind.APPROVAL, at: Date.now() / 1000});
             }
         }
+    }
+
+    // The process that runs in the session's tab: the attached client for
+    // shared server agents, else the agent itself.
+    _tabPid(s) {
+        return this._clientPids.get(s.key) ?? s.pid;
+    }
+
+    _watching(s) {
+        const peers = this._store.liveSessions().filter(o => o.provider === s.provider).map(o => this._tabPid(o));
+        return isWatching(s, focusInfo(this._tabPid(s), peers));
+    }
+
+    // Follow the focused window and its title: in a terminal, switching tabs
+    // changes only the title.
+    _untrackTitle() {
+        try {
+            if (this._focusTitleId)
+                this._focusWin.disconnect(this._focusTitleId);
+        } catch {} // the window may already be gone
+        this._focusWin = null;
+        this._focusTitleId = 0;
+    }
+
+    _trackFocus() {
+        this._untrackTitle();
+        this._focusWin = global.display.focus_window;
+        this._focusTitleId = this._focusWin
+            ? this._focusWin.connect('notify::title', () => this._onFocusChanged()) : 0;
+        this._onFocusChanged();
+    }
+
+    // The user arrived at a session that was asking for attention: it is
+    // seen, so stop the motion and take back its notification.
+    _onFocusChanged() {
+        if (!this._store)
+            return;
+        let changed = false;
+        for (const s of this._store.liveSessions()) {
+            // Cheap filter first: busy agents retitle their tab many times a second.
+            if (s.acknowledged || !ATTENTION_STATES.has(s.state) || !this._watching(s))
+                continue;
+            this._store.acknowledge(s.key);
+            this._notifier.withdraw(s.key, [NotifyKind.APPROVAL, NotifyKind.INPUT, NotifyKind.COMPLETED, NotifyKind.ERROR]);
+            changed = true;
+        }
+        if (changed)
+            this._scheduleRender();
     }
 
     _checkLiveness(replaying) {

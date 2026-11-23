@@ -34,6 +34,8 @@ Ask these six questions. A decision that cannot answer them is a guess.
 | D11 | The installer edits `~/.claude/settings.json` with a timestamped backup, touching only entries that contain `aimon_hook.py` | Ask the user to edit by hand | Reversible and exact | The file is rewritten (2 space indent) | Low: `uninstall.sh` |
 | D12 | The test shell is isolated: headless, private D-Bus, `DISPLAY` unset, helper extensions disabled | Test on the live desktop | An early test leaked a helper window onto a real screen | Slower to test | Low |
 | D13 | The Claude and OpenCode logos ship as icon assets | Hand drawn imitations | Recognisable at a glance | The logos belong to their owners (see open questions) | Low |
+| D15 | Stay quiet while the user watches the session: no notification, no bounce, no bubble when the focused window owns the session's process and its active tab title is the session's title (or an editor window names the project). Arriving at that tab later counts as seen | Always notify; a "do not disturb" switch | A notification for what is already on screen is noise, and users stop trusting the signal | Needs the session title (the Claude hook reads `ai-title` from the transcript tail). Unsure cases notify | Low: one call in `_onLines` |
+| D16 | The attention motion hops four times, then rests; a newer attention hops again | Bounce until dismissed | Endless motion turns into noise; the bubble and the dot colour still show the state | A user away for the whole bounce sees only the still icon and the notification | Low: `ATTENTION_HOPS` in `motion.js` |
 | D14 | The test control channel (`devcontrol.js`) ships inside the extension, gated by an environment variable and a folder path | Remove it from the installed copy | One code base for tests and use | About 160 lines of dead weight in production | Medium (needs a dynamic import) |
 
 ## Independent review
@@ -76,10 +78,10 @@ and the substantive Medium findings were fixed, each with a regression test.
 
 ## How this was verified
 
-Automated tests run with `npm test`: 49 Node tests (state machine, notification
+Automated tests run with `npm test`: 59 Node tests (state machine, notification
 policy, OpenCode event mapping, roaming rules, and a contract test that feeds
 real hook subprocess output and real plugin writer output through the
-extension store) and 18 Python tests (Claude hook mapping, redaction, silent
+extension store) and 22 Python tests (Claude hook mapping, redaction, silent
 stdout, exit code 0 on garbage input, file modes, compaction under concurrency,
 and the settings installer: idempotent install, exact rollback, dry run).
 `npm run lint` runs ESLint.

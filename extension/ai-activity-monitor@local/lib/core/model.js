@@ -393,6 +393,9 @@ export function aggregateProvider(sessions) {
         state: top.state,
         // Seen by the user (Dismiss): keep showing, stop asking for attention.
         acknowledged: live.every(s => s.acknowledged || s.state === State.WORKING || s.state === State.IDLE),
+        // When the newest unseen attention began: a later one hops again.
+        attentionSince: Math.max(0, ...live.filter(s => !s.acknowledged &&
+            (s.state === State.WAITING || s.state === State.COMPLETED || s.state === State.ERROR)).map(s => s.since ?? 0)),
         primary: top,
         count: live.length,
         working: live.filter(s => s.state === State.WORKING).length,

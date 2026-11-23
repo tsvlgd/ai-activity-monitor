@@ -128,7 +128,7 @@ gsettings --schemadir ~/.local/share/gnome-shell/extensions/ai-activity-monitor@
 ## Develop
 
 ```bash
-npm test                         # 49 Node tests and 18 Python tests
+npm test                         # 59 Node tests and 22 Python tests
 npm run lint                     # ESLint
 AIMON_HEADLESS=1 scripts/dev-nested.sh 1600x900   # headless test shell, own D-Bus session
 scripts/devctl.sh state          # drive it: click <provider>, pointer click X Y, shot <png>

@@ -15,7 +15,7 @@ Every adapter appends one JSON object per line to
 | `detail` | string | Human text, clamped to 160 characters, control characters removed. |
 | `tool` | string | Tool name when relevant. |
 | `cwd` | string | Session directory. |
-| `title` | string | Optional session title. |
+| `title` | string | Optional session title, as the agent shows it in the terminal tab. The Claude hook reads the newest `ai-title` record from the last 64 KiB of the transcript and sends it on `session_start`, `prompt`, `permission`, `input_needed`, `turn_complete` and `turn_error` (main agent only). The extension compares it with the focused tab title to stay quiet while the user watches. |
 | `pid` | int | Agent process (Claude) or server process (OpenCode). Sent on `session_start` and `prompt`. |
 | `reason` | string | For `session_start` (`startup`, `resume`, `clear`) and `session_end`. |
 | `agent` | string | Which agent inside the session: a Claude `agent_id` or an OpenCode child session id, at most 64 characters. Pending approvals are tracked per agent. Empty means the main agent. |

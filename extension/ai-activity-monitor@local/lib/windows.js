@@ -26,7 +26,7 @@ export function terminalCandidates(session) {
         candidates = wins.filter(w => chain.has(w.get_pid()));
     }
     if (candidates.length === 0)
-        candidates = wins.filter(w => TERMINAL_CLASS.test(`${w.get_wm_class() ?? ''} ${w.get_gtk_application_id() ?? ''}`));
+        candidates = wins.filter(isTerminal);
     const project = session.cwd ? GLib.path_get_basename(session.cwd) : '';
     const score = w => {
         const title = w.get_title() ?? '';
@@ -36,6 +36,30 @@ export function terminalCandidates(session) {
         return s;
     };
     return candidates.sort((a, b) => score(b) - score(a) || b.get_user_time() - a.get_user_time());
+}
+
+function isTerminal(w) {
+    return TERMINAL_CLASS.test(`${w.get_wm_class() ?? ''} ${w.get_gtk_application_id() ?? ''}`);
+}
+
+// Describe the focused window for lib/core/presence.js. pid is the process
+// that runs in the session's tab (the agent, or the attached client for
+// shared server agents); peerPids are the same for every live session of the
+// agent, the session's own included, to count how many share the window.
+export function focusInfo(pid, peerPids = []) {
+    const w = global.display.focus_window;
+    const wpid = w?.get_pid() ?? 0;
+    if (!w || !pid || wpid <= 0)
+        return null;
+    const owned = p => p > 0 && ancestors(p).includes(wpid);
+    if (!owned(pid))
+        return {title: w.get_title() ?? '', owns: false, terminal: false, siblings: 0};
+    return {
+        title: w.get_title() ?? '',
+        owns: true,
+        terminal: isTerminal(w),
+        siblings: peerPids.filter(owned).length,
+    };
 }
 
 export function findTerminalWindow(session) {

@@ -52,8 +52,8 @@ reasoning behind each decision.
 | OpenCode adapter | `adapters/opencode/ai-activity-monitor.js` | Subscribe to the v2 event bus. Ignore streaming deltas. Fold subagent sessions into their root. One writer per server process. |
 | Session state store | `lib/core/store.js`, `lib/core/model.js` | Pure reducer from events to session records. Aggregation per provider. Pending prompts are tracked per agent. No GObject imports, so Node tests run it unchanged. |
 | Activity manager | `extension.js` | Wires spool, store, liveness, decay, notifications and UI. Owns every timer and signal and releases them in `disable()`. |
-| Notification integration | `lib/core/policy.js`, `lib/notifier.js` | Pure spam policy plus the GNOME 46 MessageTray. One notification per session, replaced in place. |
-| Presentation | `lib/ui/indicators.js`, `lib/ui/panel.js`, `lib/ui/preview.js`, `lib/ui/motion.js`, `lib/core/roaming.js`, `lib/desktopstate.js`, `stylesheet.css` | Desktop tiles that roam in play mode and can be parked by dragging, top bar icons placed anywhere on the bar with a "done" or "needs you" bubble, motion by state (work, attention hop plus bounce with a 120 ms rest, still), a focus safe preview card 380 px wide, hover labels. |
+| Notification integration | `lib/core/policy.js`, `lib/core/presence.js`, `lib/notifier.js` | Pure spam policy, a pure "is the user already watching this session" check, and the GNOME 46 MessageTray. One notification per session, replaced in place. |
+| Presentation | `lib/ui/indicators.js`, `lib/ui/panel.js`, `lib/ui/preview.js`, `lib/ui/motion.js`, `lib/core/roaming.js`, `lib/desktopstate.js`, `stylesheet.css` | Desktop tiles that roam in play mode and can be parked by dragging, top bar icons placed anywhere on the bar with a "done" or "needs you" bubble, motion by state (work, four attention hops with a bounce then still, still), a focus safe preview card 380 px wide, hover labels. |
 | Provider registry | `lib/providers.js` | Name, icon, order and liveness strategy per agent. Adding an agent means one adapter plus one entry here. |
 
 ## Key decisions
@@ -131,6 +131,16 @@ replaying after a restart. The same kind for the same session within 30
 seconds is suppressed. Each session owns at most one notification, replaced
 in place, and an approval notification is withdrawn as soon as the agent moves
 on.
+
+Presence: when the user is already looking at the session, a new attention
+state is marked as seen at once, so there is no notification, no bounce and no
+bubble. Looking means the focused window's process is an ancestor of the
+session's process and, for a terminal, the active tab's title (the window
+title) equals the session title; for an editor such as VS Code the window
+title names the project folder. Switching to that tab or window later also
+counts as seeing it and withdraws its notification. Every unsure case notifies.
+The rule is `isWatching` in the pure `lib/core/presence.js`; `focusInfo` in
+`lib/windows.js` describes the focused window.
 
 ## Settings
 
