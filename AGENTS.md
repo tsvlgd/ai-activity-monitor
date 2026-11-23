@@ -20,6 +20,10 @@ JSONL spool files. Read `docs/ARCHITECTURE.md` and `docs/EVENTS.md` first;
   `disable()`.
 * Never let both the layout manager (`trackFullscreen`) and extension code
   write the same actor's `visible` property.
+* Container tests go through `scripts/container-test.sh` (or
+  `container-matrix.sh`), never raw `docker build` loops: the disk guard and
+  image removal live there. Never run broad Docker cleanup (`system prune -a`,
+  `volume prune`); use `scripts/cleanup-ci.sh`.
 * Never test against the real desktop session. Use
   `AIMON_HEADLESS=1 scripts/dev-nested.sh` and `scripts/devctl.sh`.
 * Docs style: no emojis, no hyphens in prose.
@@ -92,11 +96,13 @@ Every commit follows [Conventional Commits 1.0](https://www.conventionalcommits.
 ## Commands
 
 ```bash
-npm test          # 59 Node + 23 Python tests, must pass before any change is done
+npm test          # 60 Node + 30 Python tests, must pass before any change is done
 npm run lint      # ESLint
 AIMON_HEADLESS=1 scripts/dev-nested.sh 1600x900
 scripts/devctl.sh state
 scripts/container-test.sh fedora-43   # e2e check inside a distro container (Docker)
+scripts/container-matrix.sh           # all distros, one line each with free disk space
+scripts/cleanup-ci.sh --dry-run       # disk cleanup for test images; never volumes or other images
 ```
 
 ## Skills and tools that fit this project

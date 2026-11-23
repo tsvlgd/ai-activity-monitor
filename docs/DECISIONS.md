@@ -39,6 +39,7 @@ Ask these six questions. A decision that cannot answer them is a guess.
 | D17 | Public name GlanceAgent, UUID `glanceagent@mehfooj.dev`, schema `org.gnome.shell.extensions.glanceagent` | Keep `ai-activity-monitor@local` | extensions.gnome.org needs a UUID in a namespace the author controls; `@local` is not unique | The installer moves an install made under the old name once (settings copied, old copy removed, old settings kept in dconf). Spool and hook folders keep the old internal name for now | High once published: the UUID is permanent on extensions.gnome.org |
 | D18 | License GPL-2.0-or-later for the whole repository | MIT; GPL for the extension and MIT for the adapters | Same terms as GNOME Shell, which the extension runs inside; one license is simpler to explain and review | Anyone shipping a modified copy must share the source under the same terms | Low before outside contributions, high after |
 | D19 | Distro tests run in containers built from each distro's official image: a system bus started as root, then GNOME Shell headless as a normal user, no systemd | Images with systemd as init (ddterm), virtual machines | Small, readable, no extra privileges, same harness as local runs | GNOME's no logind fallback is used, so login and suspend paths are not covered | Low: one Dockerfile per distro in `ci/containers/` |
+| D20 | Container tests keep disk use bounded by themselves: a guard before each build (clean under 6 GB free, stop under 3 GB), build cache capped at 3 GB, each image removed after its run, and one cleanup script that only touches our images, our labelled layers, build cache and repo test logs | Manual pruning; broad `docker system prune` | A six distro run filled `/home` (Docker is rootless, its data lives there): images are 1 to 4 GB and build cache reached 12 GB | Every run rebuilds its image (a few minutes per distro); `AIMON_KEEP_IMAGES=1` keeps one for debugging | Low |
 | D14 | The test control channel (`devcontrol.js`) ships inside the extension, gated by an environment variable and a folder path | Remove it from the installed copy | One code base for tests and use | About 160 lines of dead weight in production | Medium (needs a dynamic import) |
 
 ## Independent review
@@ -81,10 +82,10 @@ and the substantive Medium findings were fixed, each with a regression test.
 
 ## How this was verified
 
-Automated tests run with `npm test`: 59 Node tests (state machine, notification
+Automated tests run with `npm test`: 60 Node tests (state machine, notification
 policy, OpenCode event mapping, roaming rules, and a contract test that feeds
 real hook subprocess output and real plugin writer output through the
-extension store) and 23 Python tests (Claude hook mapping, redaction, silent
+extension store) and 30 Python tests (Claude hook mapping, redaction, silent
 stdout, exit code 0 on garbage input, file modes, compaction under concurrency,
 and the settings installer: idempotent install, exact rollback, dry run).
 `npm run lint` runs ESLint.
