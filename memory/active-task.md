@@ -4,7 +4,7 @@ Started: 2026-11-23
 
 ## Phases
 - [x] 0. Research agentglance and the distro landscape (`docs/research/agentglance.md`)
-- [ ] 1. Owner approves the plan and answers the open questions in `public-release.md`  <- next
+- [ ] 1. Owner decisions: name and UUID done (13ecf65); license and logos open  <- next: license answer, then merge public-release
 - [ ] 2. Container smoke test locally: one distro image runs gnome-shell headless with the extension and `tests/e2e/presence_e2e.py`
 - [ ] 3. Widen GNOME support 46 to 51 (metadata, St API changes, harness flags), matrix green
 - [ ] 4. Terminal coverage beyond gnome-terminal (Ptyxis first)

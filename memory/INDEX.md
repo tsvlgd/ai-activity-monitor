@@ -5,14 +5,13 @@ session state as top bar icons, desktop tiles and notifications. Architecture
 in `docs/ARCHITECTURE.md`, decisions in `docs/DECISIONS.md`, rules in `AGENTS.md`.
 
 ## Where we are (2026-11-23)
-- Presence fix done: quiet while the user watches the session tab, 4 hop bounce otherwise (D15, D16). Uncommitted.
-- Installed to the live desktop 2026-11-23; loads after the next login. Not yet checked on the real screen.
+- On main: presence fix 6baf87f (D15, D16), rename to GlanceAgent `glanceagent@mehfooj.dev` 773e916 (D17), license GPL-2.0-or-later (D18).
+- Live desktop installed as `glanceagent@mehfooj.dev` (old UUID migrated); loads after the next login; not yet checked on screen.
 - Public Linux release researched (`docs/research/agentglance.md`), plan awaiting approval.
 - Promo video v3 rendered and backed up in `media/promo-video/` (0d7bc8c); name GlanceAgent used in the video only.
 
 ## Next
 - After login: verify the fix on the real desktop (agent-desktop screenshots, user switches tabs).
-- Commit the presence fix (presence.js is new and imported, ship it in the same commit).
 - Public release: follow `memory/active-task.md`.
 - Video: owner to review v3; optional fixes listed in `memory/promo-video.md`.
 

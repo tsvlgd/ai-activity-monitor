@@ -9,6 +9,7 @@ Full research and distro matrix: `docs/research/agentglance.md`.
 - 2026-11-23: Do NOT build these agentglance features: phone connectivity, model and token tracking, display templates, inline diffs.
 - 2026-11-23: Builds and tests via Docker and CI; the agent owns the CI design.
 - Sound effects and more features: discuss after the fixes, not before.
+- 2026-11-23: Name GlanceAgent, UUID `glanceagent@mehfooj.dev`, schema `org.gnome.shell.extensions.glanceagent` (D17). Flagged to owner: the name is AgentGlance reversed, a confusion and trademark risk; free to change until published.
 
 ## Known blockers (from research, verify before acting)
 - `metadata.json`: shell-version only 46, UUID `@local`, `version` field, localhost url block extensions.gnome.org.
@@ -18,4 +19,5 @@ Full research and distro matrix: `docs/research/agentglance.md`.
 - No LICENSE; Claude and OpenCode logos shipped without permission (D13).
 
 ## Open questions for the owner
-- License, public name and UUID, extensions.gnome.org account, logo replacement.
+- License: GPL-2.0-or-later, MIT, or a split (GPL extension, MIT adapters). Undecided.
+- extensions.gnome.org account, logo replacement, renaming internal spool and hook folders.
