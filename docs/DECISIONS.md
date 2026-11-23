@@ -85,7 +85,7 @@ and the substantive Medium findings were fixed, each with a regression test.
 Automated tests run with `npm test`: 60 Node tests (state machine, notification
 policy, OpenCode event mapping, roaming rules, and a contract test that feeds
 real hook subprocess output and real plugin writer output through the
-extension store) and 30 Python tests (Claude hook mapping, redaction, silent
+extension store) and 31 Python tests (Claude hook mapping, redaction, silent
 stdout, exit code 0 on garbage input, file modes, compaction under concurrency,
 and the settings installer: idempotent install, exact rollback, dry run).
 `npm run lint` runs ESLint.

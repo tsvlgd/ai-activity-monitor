@@ -6,9 +6,11 @@ Nothing real is deleted, and the tests prove what would be.
 """
 import os
 import shutil
+import signal
 import stat
 import subprocess
 import tempfile
+import time
 import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -137,6 +139,48 @@ class CleanupCiTests(unittest.TestCase):
         self.assertIn("below the 3 GB minimum", r.stderr)
         self.assertIn("docker builder prune -af", calls)  # it tried cleaning first
         self.assert_never_touches_others(calls)
+
+
+class ContainerTestInterruptTests(unittest.TestCase):
+    """An interrupted container test still removes its image (the run that
+    filled the disk was stopped by hand and left its images behind)."""
+
+    def test_ctrl_c_removes_the_image(self):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp)
+        repo = os.path.join(tmp, "repo")
+        os.makedirs(os.path.join(repo, "scripts"))
+        os.makedirs(os.path.join(repo, "ci", "containers", "demo"))
+        open(os.path.join(repo, "ci", "containers", "demo", "Dockerfile"), "w").close()
+        for name in ("cleanup-ci.sh", "container-test.sh"):
+            shutil.copy(os.path.join(ROOT, "scripts", name), os.path.join(repo, "scripts", name))
+        stubs, bindir = os.path.join(tmp, "stubs"), os.path.join(tmp, "bin")
+        os.makedirs(stubs)
+        os.makedirs(bindir)
+        docker = FAKE_DOCKER.replace('case "$1" in', 'case "$1" in\n  run) touch "$STUB_DIR/running"; sleep 30; exit 0 ;;')
+        for name, body in (("docker", docker), ("df", FAKE_DF)):
+            path = os.path.join(bindir, name)
+            with open(path, "w") as fh:
+                fh.write(body)
+            os.chmod(path, os.stat(path).st_mode | stat.S_IEXEC)
+        with open(os.path.join(stubs, "avail"), "w") as fh:
+            fh.write("20\n")
+        open(os.path.join(stubs, "images"), "w").close()
+        log = os.path.join(tmp, "calls.log")
+        env = dict(os.environ, PATH=f"{bindir}:{os.environ['PATH']}", STUB_DIR=stubs, STUB_LOG=log, STUB_ROOT=tmp)
+        env.pop("AIMON_KEEP_IMAGES", None)
+        p = subprocess.Popen(["bash", os.path.join(repo, "scripts", "container-test.sh"), "demo"], env=env,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
+        for _ in range(100):
+            if os.path.exists(os.path.join(stubs, "running")):
+                break
+            time.sleep(0.05)
+        os.killpg(p.pid, signal.SIGINT)
+        p.communicate(timeout=20)
+        with open(log) as fh:
+            calls = fh.read().splitlines()
+        self.assertIn("docker rmi glanceagent-test:demo", calls)
+        self.assertNotEqual(p.returncode, 0)
 
 
 if __name__ == "__main__":

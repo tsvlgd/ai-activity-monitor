@@ -66,7 +66,7 @@ cleanup() {
       local distro="${ref#"$REPO":}" keep=""
       for k in "${KEEP[@]}"; do [ "$k" = "$distro" ] && keep=1; done
       if [ -n "$keep" ]; then echo "  keep $ref ($size), asked to keep"; continue; fi
-      if grep -qx "$ref" <<<"$used"; then echo "  keep $ref ($size), a container uses it"; continue; fi
+      if grep -qxF "$ref" <<<"$used"; then echo "  keep $ref ($size), a container uses it"; continue; fi
       echo "  remove image $ref ($size)"
       run "$ENGINE" rmi "$ref" >/dev/null
     done < <("$ENGINE" images "$REPO" --format '{{.Repository}}:{{.Tag}} {{.Size}}' 2>/dev/null || true)
