@@ -1,7 +1,9 @@
 import React from 'react';
 import {AbsoluteFill, interpolate, spring, useCurrentFrame} from 'remotion';
 import {pop} from '../lib/motion';
-import {wf} from '../lib/timeline';
+import {scene, wf} from '../lib/timeline';
+import {VIDEO_SCROLL_ZOOMED, videoT} from '../lib/videoClock';
+import {BLOG_TAB, VideoPage, VIDEO_TAB, VIDEO_URL} from '../ui/Pages';
 import {AgentState, FONT_MONO, FPS, Provider, TERM, TOPBAR_H} from '../theme';
 import {Cursor, cursorAt} from '../ui/Cursor';
 import {CARD_W, LogLine, PreviewCard} from '../ui/PreviewCard';
@@ -160,7 +162,15 @@ export const ClickScene: React.FC = () => {
 
 	return (
 		<AbsoluteFill>
-			<TopBarStage z={1} icons={icons} scroll={60}>
+			<TopBarStage
+				z={1}
+				soften={0.15}
+				icons={icons}
+				tabs={[VIDEO_TAB, BLOG_TAB]}
+				active={0}
+				url={VIDEO_URL}
+				page={<VideoPage t={videoT(scene('click').from + Math.min(frame, c.claudeClick))} playing={frame < c.claudeClick} scroll={VIDEO_SCROLL_ZOOMED} />}
+			>
 				<Card
 					frame={frame}
 					openAt={claudeOpen}

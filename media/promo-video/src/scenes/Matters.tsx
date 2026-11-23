@@ -1,5 +1,8 @@
 import React from 'react';
 import {AbsoluteFill, spring, useCurrentFrame} from 'remotion';
+import {scene} from '../lib/timeline';
+import {VIDEO_SCROLL_ZOOMED, videoT} from '../lib/videoClock';
+import {BLOG_TAB, VideoPage, VIDEO_TAB, VIDEO_URL} from '../ui/Pages';
 import {wf} from '../lib/timeline';
 import {AgentState, FPS, Provider, TERM, W} from '../theme';
 import {Inset} from '../ui/Inset';
@@ -71,7 +74,15 @@ export const Matters: React.FC = () => {
 	const c = mattersCues();
 	return (
 		<AbsoluteFill>
-			<TopBarStage z={1} icons={mattersIcons(frame)} scroll={60}>
+			<TopBarStage
+				z={1}
+				soften={0.15}
+				icons={mattersIcons(frame)}
+				tabs={[VIDEO_TAB, BLOG_TAB]}
+				active={0}
+				url={VIDEO_URL}
+				page={<VideoPage t={videoT(scene('matters').from + frame)} scroll={VIDEO_SCROLL_ZOOMED} />}
+			>
 				<Banner
 					frame={frame}
 					inAt={c.claudeAmber}

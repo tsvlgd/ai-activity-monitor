@@ -1,6 +1,6 @@
-# GlanceAgent promo: script and storyboard (v2)
+# GlanceAgent promo: script and storyboard (v3)
 
-1920 x 1080, 30 fps, 1394 frames (46.5 s). Voice: `en-US-AndrewNeural` (rate +4%), generated into `voice/out/` (v1 clips are kept in `voice/out_v1/`).
+1920 x 1080, 30 fps, 1457 frames (48.6 s). Voice: `en-US-AndrewNeural` (rate +4%), generated into `voice/out/` (v1 clips are kept in `voice/out_v1/`).
 Each voiced scene lasts its clip duration plus 0.35 s; the outro gets 1.8 s more for the end card. A silent 3 s interlude sits between the top bar and the states scene.
 Word timings come from `src/timeline.json` and drive every key action through `wf(scene, word)`.
 
@@ -9,11 +9,11 @@ Word timings come from `src/timeline.json` and drive every key action through `w
 | 1 | hook | 0 | 158 | 5.27 |
 | 2 | problem | 158 | 168 | 5.60 |
 | 3 | intro | 326 | 117 | 3.90 |
-| 4 | topbar | 443 | 144 | 4.80 |
-| 5 | interlude (silent) | 587 | 90 | 3.00 |
-| 6 | matters | 677 | 273 | 9.10 |
-| 7 | click | 950 | 216 | 7.20 |
-| 8 | outro | 1166 | 228 | 7.60 |
+| 4 | topbar | 443 | 207 | 6.90 |
+| 5 | interlude (silent) | 650 | 90 | 3.00 |
+| 6 | matters | 740 | 273 | 9.10 |
+| 7 | click | 1013 | 216 | 7.20 |
+| 8 | outro | 1229 | 228 | 7.60 |
 
 Frame numbers below are local to the scene.
 
@@ -43,11 +43,12 @@ Frame numbers below are local to the scene.
 
 ## 4 Top bar
 
-> Every agent gets a live icon in the top bar, visible over any app.
+> Every agent gets a live icon in the top bar. Watch a video or read a blog in Chrome, and you still see it.
 
-* A maximised browser under the top bar. On "icon" (39) three icons pop into the top bar just left of the clock (Claude Code, OpenCode, Codex), with a brief green ring.
-* "top" (57): the camera zooms 2.4x into the top bar; the page underneath softens.
-* All three icons show the work motion (380 ms each way) with green dots. No state changes here.
+* A maximised browser under the light top bar, first on a docs tab. On "icon" (40) three icons pop into the top bar just left of the clock (Claude Code, OpenCode, Codex) with a brief green ring. All three show the work motion with green dots for the whole scene.
+* "Watch" (89): the browser switches to its second tab, a generic video page (`video.example.net`, no real brand): a large 16:9 player with drifting soft shapes and a "Calm by default" slide, a progress bar that advances, pause, next and volume controls, the time counter, the title "Designing calm interfaces, conference talk", a channel line with a generic avatar, and an "Up next" column.
+* "blog" (127): the browser switches to its third tab, a clean article "A gentle guide to Wayland" (author line, image block, paragraphs) that slowly scrolls.
+* "still" (167): the camera zooms 2x toward the top bar, keeping a wide strip of the article visible beneath the three working icons.
 
 ## 5 Interlude (silent, no captions)
 
@@ -60,7 +61,7 @@ Frame numbers below are local to the scene.
 
 > When Claude Code needs your approval, it turns amber. When OpenCode asks you to pick an option, it tells you. When Codex is done, it bounces.
 
-* Back to the zoomed top bar over the browser; all three icons start out working.
+* Back to the zoomed top bar (2.4x). Underneath, the same video keeps playing (its clock carries on from the topbar scene), scrolled so the moving picture, the advancing progress bar and the time counter sit under the icons. All three icons start out working.
 * "approval" (37): a small Claude terminal inset shows the cause (`Update(src/auth/session.ts)`, "Do you want to make this edit?").
 * "amber" (74): the Claude Code dot turns amber, the attention bounce starts (170 ms hop, 460 ms bounce, 120 ms rest), a "need you!" bubble appears and a GNOME banner drops in: "Claude Code needs your approval", "Allow edit to src/auth/session.ts?".
 * "asks" (122): OpenCode inset with the question and options.
@@ -72,7 +73,7 @@ Frame numbers below are local to the scene.
 
 > Click an icon to see what it needs. Open in Terminal takes you straight to that prompt. Dismiss, and it stops bouncing.
 
-* The zoomed top bar with Claude Code and OpenCode amber and bouncing, Codex blue and bouncing.
+* The zoomed top bar over the same video page, which pauses on the first click. Claude Code and OpenCode are amber and bouncing, Codex blue and bouncing.
 * "icon" (10): the cursor clicks the Claude Code top bar icon (pressed highlight). The preview card drops down under the icon: Claude Code, "auth-service · 1m", chip "Needs you" in the waiting colours, "Approve: Edit session.ts", a dark log with three recent lines, buttons "Open in Terminal" and "Dismiss".
 * "Open" (64): the cursor clicks "Open in Terminal", the card closes and the Claude terminal slides to the front with a Claude Code permission prompt: "Edit file src/auth/session.ts", a four line diff, "Do you want to make this edit to session.ts?" and the options "1. Yes", "2. Yes, and don't ask again this session", "3. No, and tell Claude what to do differently". The selected option pulses on "prompt" (120).
 * 132: the terminal slides away. The cursor clicks the bouncing Codex icon (147); its card shows chip "Done", "All tests passed" and the test log.

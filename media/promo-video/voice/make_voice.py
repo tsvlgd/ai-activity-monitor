@@ -7,6 +7,7 @@ import asyncio
 import json
 import os
 import subprocess
+import sys
 
 import edge_tts
 
@@ -38,8 +39,16 @@ async def main():
     with open(os.path.join(HERE, "script.json"), encoding="utf-8") as fh:
         cfg = json.load(fh)
     os.makedirs(OUT, exist_ok=True)
+    only = sys.argv[1] if len(sys.argv) > 1 else None
+    old = {}
+    if only and os.path.exists(os.path.join(OUT, "timeline.json")):
+        with open(os.path.join(OUT, "timeline.json"), encoding="utf-8") as fh:
+            old = {x["id"]: x for x in json.load(fh)["scenes"]}
     scenes = []
     for s in cfg["scenes"]:
+        if only and s["id"] != only and s["id"] in old:
+            scenes.append(old[s["id"]])
+            continue
         for attempt in range(4):
             try:
                 scenes.append(await scene(cfg, s))
