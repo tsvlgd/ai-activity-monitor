@@ -10,7 +10,7 @@ Motion graphics walkthrough of the product, about 48 s, 1080p, 30 fps.
 
 ## Decisions (owner)
 - Name in the video only: GlanceAgent. "aimon" is taken by AIMon (AI monitoring company: npm `aimon`, PyPI `aimon`, GitHub org aimonlabs). Repo, extension id and docs still say AI Activity Monitor; renaming them is a separate change.
-- GlanceAgent is close to AgentGlance, an existing macOS tool for the same job; keep the names clearly apart.
+- GlanceAgent vs AgentGlance (macOS overlay, 25 stars, agentglance.app): owner accepted the risk on 2026-11-23. Reasons: different platform (Linux vs macOS), different word order, no project named exactly GlanceAgent.
 - Voice: edge-tts `en-US-AndrewNeural`, rate +4% (script text goes to Microsoft servers). One clip per scene, word timings drive actions and captions.
 - Codex is shown working like the other agents although no Codex adapter exists (owner choice).
 - Logos: Claude from claude.com, OpenCode from opencode.ai/brand, Codex is the OpenAI blossom (no official Codex mark found). Sources in `~/Dev/workspace/aimon-video/assets/logos/SOURCES.md`.
