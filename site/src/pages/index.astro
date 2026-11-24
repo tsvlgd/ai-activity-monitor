@@ -69,8 +69,7 @@ const faq = [
     <section class="section" id="states" aria-labelledby="states-h">
       <div class="wrap">
         <div class="section-head">
-          <p class="kicker">Five states</p>
-          <h2 id="states-h">Motion tells you the state before you read a word.</h2>
+          <div class="head-title"><p class="kicker">Five states</p><h2 id="states-h">Motion tells you the state before you read a word.</h2></div>
           <p>Each session gets a coloured dot and a way of moving. Out of the corner of your eye, a bob means busy and a hop means it is your turn.</p>
         </div>
         <ol class="states">
@@ -95,8 +94,7 @@ const faq = [
     <section class="section" id="how" aria-labelledby="how-h">
       <div class="wrap">
         <div class="section-head">
-          <p class="kicker">How it works</p>
-          <h2 id="how-h">Small parts, all on your machine.</h2>
+          <div class="head-title"><p class="kicker">How it works</p><h2 id="how-h">Small parts, all on your machine.</h2></div>
           <p>On Wayland only the compositor may draw above other windows or raise another app's window, so the display part is a GNOME Shell extension. Everything else is a few plain files.</p>
         </div>
         <ol class="flow">
@@ -118,8 +116,7 @@ const faq = [
       <section class="section" id="video" aria-labelledby="video-h">
         <div class="wrap">
           <div class="section-head">
-            <p class="kicker">See it move</p>
-          <h2 id="video-h">Forty eight seconds, start to finish.</h2>
+            <div class="head-title"><p class="kicker">See it move</p><h2 id="video-h">Forty eight seconds, start to finish.</h2></div>
             <p>From a busy afternoon of switching windows to the one click that takes you to the prompt that is waiting.</p>
           </div>
           <div class="video-frame">
@@ -158,8 +155,7 @@ const faq = [
 
     <section class="section" id="faq" aria-labelledby="faq-h">
       <div class="wrap faq-wrap">
-        <p class="kicker">FAQ</p>
-          <h2 id="faq-h">Questions, answered plainly.</h2>
+        <div class="head-title"><p class="kicker">FAQ</p><h2 id="faq-h">Questions, answered plainly.</h2></div>
         <div class="faq">
           {faq.map((f) => (
             <details>
@@ -232,36 +228,7 @@ const faq = [
   .state-means { font-weight: 600; color: var(--ink); }
   .state-moves { margin-top: 8px; color: var(--muted); font-size: 0.95rem; line-height: 1.55; }
 
-  /* Places */
-  .places { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-  .place { background: var(--surface); border-radius: var(--radius-card); padding: 20px 20px 28px; }
-  .place h3 { font-size: 1.1875rem; letter-spacing: -0.015em; margin: 24px 4px 8px; }
-  .place p { color: var(--ink-2); margin: 0 4px; max-width: 34em; }
-  .place-art { position: relative; height: 180px; border-radius: 14px; overflow: hidden; background: #d6dde8; display: grid; place-items: center; }
-  @media (prefers-color-scheme: dark) { .place-art { background: #262b34; } }
-  .mini-bar { position: absolute; top: 0; left: 0; right: 0; height: 40px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; background: rgba(247, 248, 251, 0.9); color: #2b303b; font-size: 0.8125rem; font-weight: 650; }
-  .mini-icons { display: flex; gap: 14px; }
-  .mini-pi { position: relative; display: grid; place-items: center; }
-  .mini-pi img { width: 18px; height: 18px; }
-  .mini-pi .dot { position: absolute; bottom: -7px; left: 50%; width: 4px; height: 4px; margin-left: -2px; }
-  .art-bar::after { content: ""; position: absolute; left: 12%; right: 12%; top: 64px; bottom: -20px; background: rgba(255, 255, 255, 0.7); border-radius: 12px 12px 0 0; box-shadow: 0 10px 30px rgba(30, 40, 60, 0.12); }
-  @media (prefers-color-scheme: dark) { .art-bar::after { background: rgba(255, 255, 255, 0.08); } }
-  .desk-tile { position: absolute; display: flex; align-items: center; gap: 8px; }
-  .desk-tile .dot { width: 6px; height: 6px; }
-  .desk-tile .bubble { position: absolute; bottom: 54px; left: 22px; transform: translateX(-50%); font-size: 0.8125rem; }
-  .t-a { left: 26%; top: 92px; } .t-b { left: 58%; top: 104px; }
-  .mini-card, .mini-note { background: rgba(246, 247, 250, 0.98); color: #262a33; border-radius: 16px; box-shadow: 0 10px 30px rgba(24, 30, 42, 0.18); }
-  .mini-card { width: min(300px, 84%); padding: 16px; display: grid; gap: 4px; font-size: 0.875rem; }
-  .mini-card b { font-size: 0.95rem; }
-  .mini-card > span:not(.mini-actions) { color: #5f6672; }
-  .mini-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-  .mini-actions i { font-style: normal; text-align: center; font-weight: 650; font-size: 0.8125rem; padding: 8px 6px; border-radius: 10px; background: rgba(120, 130, 145, 0.13); white-space: nowrap; }
-  .mini-actions i:first-child { background: #2b303b; color: #fff; }
-  .mini-note { width: min(360px, 88%); display: flex; gap: 12px; align-items: center; padding: 14px; }
-  .mini-note .tile { width: 38px; height: 38px; box-shadow: none; background: #fff; }
-  .mini-note .tile img { width: 20px; height: 20px; }
-  .mini-note b { display: block; font-size: 0.875rem; }
-  .mini-note small { display: block; font-size: 0.8125rem; color: #5f6672; }
+  .head-title .kicker, .install-copy > .kicker { font-size: var(--step--1); line-height: 1.4; color: var(--muted); font-weight: 650; margin-bottom: 14px; }
 
   /* Flow */
   .flow { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; counter-reset: none; }
@@ -282,7 +249,7 @@ const faq = [
   /* Install */
   .install { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 48px 72px; align-items: start; }
   .install h2, .faq-wrap h2 { font-size: var(--step-2); line-height: 1.08; letter-spacing: -0.03em; font-weight: 740; margin-bottom: 20px; }
-  .install-copy > p:not(.uninstall) { color: var(--ink-2); font-size: var(--step-1); line-height: 1.5; }
+  .install-copy > p:not(.uninstall):not(.kicker) { color: var(--ink-2); font-size: var(--step-1); line-height: 1.5; }
   .after { margin: 28px 0 0; padding-left: 1.3em; display: grid; gap: 10px; color: var(--ink-2); }
   .after li::marker { color: var(--muted); font-family: var(--mono); font-size: 0.85em; }
   .uninstall { margin-top: 24px; font-size: var(--step--1); color: var(--muted); }
@@ -328,9 +295,6 @@ const faq = [
     .compat-meta { margin-left: 0; width: 100%; }
     .install, .faq-wrap, .assurances { grid-template-columns: 1fr; }
   }
-  @media (max-width: 700px) {
-    .places { grid-template-columns: 1fr; }
-  }
   @media (max-width: 640px) {
     .states { grid-template-columns: 1fr; border-top: 0; }
     .state, .state + .state { display: grid; grid-template-columns: 128px minmax(0, 1fr); column-gap: 16px; padding: 20px 0; border-left: 0; border-top: 1px solid var(--line); }
@@ -341,6 +305,5 @@ const faq = [
     .faq details p { padding-right: 0; }
     .terminal pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.8125rem; }
     .comment { display: block; padding-left: 1.2em; }
-    .t-a { left: 14%; } .t-b { left: 58%; }
   }
 </style>
