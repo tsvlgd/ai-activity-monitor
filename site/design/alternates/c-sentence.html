@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C: The status sentence</title>
+<link rel="stylesheet" href="base.css">
+<style>
+body { background: #fbfaf7; }
+.nav { max-width: 1240px; margin: 0 auto; padding: 22px 28px; display: flex; justify-content: space-between; font-weight: 700; }
+.nav span:last-child { font-weight: 550; color: var(--ink-2); }
+.hero { max-width: 1240px; margin: 0 auto; padding: 72px 28px 80px; }
+.lines { list-style: none; padding: 0; font-size: clamp(36px, 6.4vw, 92px); line-height: 1.12; letter-spacing: -0.04em; font-weight: 740; }
+.lines li { display: flex; align-items: center; gap: 0.28em; }
+.lines li.dim { color: #b8bdc6; }
+.lines .tile { width: 0.9em; height: 0.9em; border-radius: 0.2em; flex: none; }
+.lines .tile img { width: 0.55em; height: 0.55em; }
+.lines .dot { width: 0.14em; height: 0.14em; border-radius: 50%; flex: none; }
+.sub { display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: end; margin-top: 56px; border-top: 1px solid var(--line); padding-top: 28px; }
+.lede { font-size: 20px; color: var(--ink-2); max-width: 36em; }
+.ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+@media (max-width: 900px) { .nav, .hero { padding-left: 16px; padding-right: 16px; } .hero { padding-top: 40px; } .sub { grid-template-columns: 1fr; } }
+</style></head><body>
+<div class="nav"><span>GlanceAgent</span><span>GitHub</span></div>
+<section class="hero">
+  <ul class="lines">
+    <li><span class="tile"><img src="logos/claude-code.svg" alt=""></span>Claude Code is working <span class="dot" style="background:var(--working)"></span></li>
+    <li><span class="tile"><img src="logos/opencode.svg" alt=""></span>OpenCode needs you <span class="dot" style="background:var(--waiting)"></span></li>
+    <li class="dim"><span class="tile"><img src="logos/claude-code.svg" alt=""></span>The tests are done <span class="dot" style="background:var(--completed)"></span></li>
+  </ul>
+  <div class="sub">
+    <p class="lede">GlanceAgent is a GNOME Shell extension that shows what your coding agents are doing as small moving icons in the top bar and on the desktop. Keep working in another window. Look up when something hops.</p>
+    <div class="ctas"><a class="btn btn-primary">Install from source</a><a class="btn">View on GitHub</a></div>
+  </div>
+</section>
+</body></html>
