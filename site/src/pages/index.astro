@@ -1,0 +1,346 @@
+---
+import Base from '../layouts/Base.astro';
+import TopBar from '../components/TopBar.astro';
+import GlanceDemo from '../components/demo/GlanceDemo.jsx';
+import {site} from '../../site.config.mjs';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const logo = {claude: `${base}logos/claude-code.svg`, opencode: `${base}logos/opencode.svg`};
+const videoSrc = site.video.src ? (/^https?:/.test(site.video.src) ? site.video.src : `${base}${site.video.src}`) : '';
+const videoPoster = site.video.poster ? (/^https?:/.test(site.video.poster) ? site.video.poster : `${base}${site.video.poster}`) : undefined;
+
+const states = [
+  {key: 'idle', name: 'Idle', means: 'Open, with nothing to do.', moves: 'Still. Idle sessions are hidden by default, so only active agents take space.', agent: 'claude', motion: ''},
+  {key: 'working', name: 'Working', means: 'Reading, editing, running tools.', moves: 'Bobs gently up and down for as long as the agent works.', agent: 'opencode', motion: 'moves-work'},
+  {key: 'waiting', name: 'Waiting for you', means: 'Asks for approval or an answer.', moves: 'Hops four times and says “need you!”, then rests.', agent: 'claude', motion: 'moves-hop', bubble: 'need you!'},
+  {key: 'completed', name: 'Completed', means: 'Finished its turn.', moves: 'Hops four times and says “done!”, then returns to idle after three minutes.', agent: 'opencode', motion: 'moves-hop', bubble: 'done!'},
+  {key: 'error', name: 'Error', means: 'Stopped on an error.', moves: 'Hops four times and says “oops, an error”.', agent: 'claude', motion: 'moves-hop', bubble: 'oops, an error'},
+];
+
+const install = [
+  {cmd: `git clone ${site.repoUrl}.git`, note: ''},
+  {cmd: `cd ${site.repoDir}`, note: ''},
+  {cmd: 'scripts/install.sh --dry-run --all', note: 'show what would change'},
+  {cmd: 'scripts/install.sh --extension', note: 'the GNOME Shell extension'},
+  {cmd: 'scripts/install.sh --claude', note: 'Claude Code hooks'},
+  {cmd: 'scripts/install.sh --opencode', note: 'OpenCode plugin'},
+];
+const installText = install.map((l) => l.cmd).join('\n');
+
+const faq = [
+  {q: 'Which desktops and versions does it run on?', a: 'GlanceAgent is a GNOME Shell extension. It is developed on Ubuntu 24.04 and tested on GNOME Shell 46 in a Wayland session. Indicators use the primary monitor.'},
+  {q: 'Will it keep interrupting me?', a: 'No. Each session gets at most one notification, which is replaced rather than stacked. A finished turn only notifies if it ran for 15 seconds or more, and nothing pops up while you are already looking at that session. The hops stop after four.'},
+  {q: 'What does the installer change?', a: 'Only what you ask for. --extension copies the extension into ~/.local/share/gnome-shell/extensions and enables it. --claude adds hook entries to ~/.claude/settings.json after writing a timestamped backup, keeps your existing hooks, and adds nothing on a second run. --opencode copies one plugin file. Run any step with --dry-run first to see the exact changes.'},
+  {q: 'Does it send my data anywhere?', a: 'No. The hook and the plugin append events to a file under $XDG_RUNTIME_DIR, which lives in memory, and the extension reads them on the same machine. Nothing runs as root.'},
+  {q: 'Which terminals does Open in Terminal support?', a: 'It raises the window that runs the session. In GNOME Terminal it also switches to the exact tab.'},
+  {q: 'Does it slow my desktop down?', a: 'The icons and the card cost very little. Roaming tiles on the empty desktop use a few percent of one core while they move; turn them off with the desktop-play setting if that matters to you.'},
+  {q: 'How do I remove it?', a: 'Run scripts/uninstall.sh (add --dry-run to preview). It removes the extension and its settings, only its own hook entries, the plugin file and the event folder, then you log out and back in.'},
+  {q: 'What does it cost?', a: 'Nothing. GlanceAgent is free software under the GNU General Public License, version 2 or later, the same terms as GNOME Shell.'},
+];
+---
+<Base>
+  <TopBar />
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-in wrap">
+        <div class="hero-copy">
+          <p class="kicker">A GNOME Shell extension for coding agents</p>
+          <h1>Your coding agents, at a glance.</h1>
+        </div>
+        <div class="hero-side">
+          <p class="lede">A small live icon for every Claude Code and OpenCode session, in the top bar and on your desktop. It bobs while the agent works, hops when it needs you, and goes still when there is nothing to do. Try it below.</p>
+          <div class="ctas">
+            <a class="btn btn-primary" href="#install">Install from source</a>
+            <a class="btn" href={site.repoUrl}>View on GitHub</a>
+          </div>
+        </div>
+      </div>
+      <div class="wrap demo-wrap">
+        <GlanceDemo client:load base={base} />
+      </div>
+      <div class="compat wrap">
+        <span class="compat-label">Works with</span>
+        <span class="compat-item"><img src={logo.claude} alt="" width="22" height="22" />Claude Code</span>
+        <span class="compat-item"><img src={logo.opencode} alt="" width="22" height="22" class="logo-on-light" />OpenCode</span>
+        <span class="compat-meta">Free software under the GPL, version 2 or later. Tested on GNOME Shell 46 with Wayland.</span>
+      </div>
+    </section>
+
+    <section class="section" id="states" aria-labelledby="states-h">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">Five states</p>
+          <h2 id="states-h">Motion tells you the state before you read a word.</h2>
+          <p>Each session gets a coloured dot and a way of moving. Out of the corner of your eye, a bob means busy and a hop means it is your turn.</p>
+        </div>
+        <ol class="states">
+          {states.map((s) => (
+            <li class:list={['state', `is-${s.key}`]}>
+              <div class="state-stage">
+                {s.bubble && <span class="bubble state-bubble" aria-hidden="true">{s.bubble}</span>}
+                <span class:list={['tile', s.motion]}>
+                  <img src={logo[s.agent]} alt="" width="24" height="24" />
+                </span>
+                <span class="dot state-dot"></span>
+              </div>
+              <h3>{s.name}</h3>
+              <p class="state-means">{s.means}</p>
+              <p class="state-moves">{s.moves}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="how" aria-labelledby="how-h">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">How it works</p>
+          <h2 id="how-h">Small parts, all on your machine.</h2>
+          <p>On Wayland only the compositor may draw above other windows or raise another app's window, so the display part is a GNOME Shell extension. Everything else is a few plain files.</p>
+        </div>
+        <ol class="flow">
+          <li><span class="flow-n">1</span><h3>Your agent reports</h3><p>A Claude Code hook or an OpenCode plugin turns each agent event into one normalized event.</p></li>
+          <li><span class="flow-n">2</span><h3>One line, in memory</h3><p>The event is appended as a JSON line to a spool file under <code>$XDG_RUNTIME_DIR</code>. It never touches the disk.</p></li>
+          <li><span class="flow-n">3</span><h3>GNOME Shell listens</h3><p>The extension watches that folder, replays it after a restart, and turns events into session states.</p></li>
+          <li><span class="flow-n">4</span><h3>You glance</h3><p>Icons, the card and notifications follow the state. A slow sweep notices agents that exit without saying goodbye.</p></li>
+        </ol>
+        <ul class="assurances">
+          <li><span>Nothing runs as root, and no system packages are installed.</span></li>
+          <li><span>Every install step is opt in and has a <code>--dry-run</code>.</span></li>
+          <li><span>Your Claude Code settings are backed up before any hook is added.</span></li>
+          <li><span>Turn animations off in GNOME and every icon goes still.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    {videoSrc && (
+      <section class="section" id="video" aria-labelledby="video-h">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="kicker">See it move</p>
+          <h2 id="video-h">Forty eight seconds, start to finish.</h2>
+            <p>From a busy afternoon of switching windows to the one click that takes you to the prompt that is waiting.</p>
+          </div>
+          <div class="video-frame">
+            <video controls preload="none" playsinline poster={videoPoster} src={videoSrc}>
+              <a href={videoSrc}>Download the video</a>
+            </video>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <section class="section" id="install" aria-labelledby="install-h">
+      <div class="wrap install">
+        <div class="install-copy">
+          <p class="kicker">Install</p>
+          <h2 id="install-h">Clone it, install the parts you use, log in again.</h2>
+          <p>You need GNOME Shell 46 on Wayland, Python 3, and Claude Code with hooks or OpenCode 2.x. Pick only the parts you use.</p>
+          <ol class="after">
+            <li>Run the install commands.</li>
+            <li>Log out and back in once, so GNOME Shell loads the extension.</li>
+            <li>Start a new Claude Code session, or restart the OpenCode server with <code>opencode serve --service</code>.</li>
+          </ol>
+          <p class="uninstall">To remove everything later: <code>scripts/uninstall.sh</code></p>
+        </div>
+        <div class="terminal">
+          <div class="terminal-head">
+            <span>Terminal</span>
+            <button class="copy" type="button" data-copy={installText}>Copy</button>
+          </div>
+          <pre><code>{install.map((l) => (
+            <span class="line"><span class="prompt" aria-hidden="true">$ </span>{l.cmd}{l.note && <span class="comment">  # {l.note}</span>}</span>
+          ))}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-h">
+      <div class="wrap faq-wrap">
+        <p class="kicker">FAQ</p>
+          <h2 id="faq-h">Questions, answered plainly.</h2>
+        <div class="faq">
+          {faq.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-in">
+      <div class="footer-top">
+        <span class="brand-foot"><img src={`${base}favicon.svg`} alt="" width="20" height="20" />GlanceAgent</span>
+        <nav aria-label="Footer">
+          <a href={site.repoUrl}>Source on GitHub</a>
+          <a href={`${site.repoUrl}/blob/main/docs/GUIDE.md`}>Guide</a>
+          <a href={`${site.repoUrl}/blob/main/LICENSE`}>License</a>
+        </nav>
+      </div>
+      <p>Free software under the GNU General Public License, version 2 or later.</p>
+      <p>GlanceAgent is an independent project, not affiliated with Anthropic or OpenCode. Claude, Claude Code and OpenCode and their logos are trademarks of their owners.</p>
+    </div>
+  </footer>
+
+  <script>
+    for (const btn of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+          btn.textContent = 'Copied';
+        } catch {
+          btn.textContent = 'Select and copy';
+        }
+        setTimeout(() => { btn.textContent = 'Copy'; }, 1800);
+      });
+    }
+  </script>
+</Base>
+
+<style>
+  /* Hero */
+  .hero { padding-bottom: 0; }
+  .hero-in {
+    display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 24px 64px; align-items: end;
+    padding-top: clamp(40px, 6vw, 88px); padding-bottom: clamp(28px, 3.5vw, 44px);
+  }
+  h1 { font-size: clamp(2.5rem, 1.2rem + 3.6vw, 4.75rem); line-height: 1.0; letter-spacing: -0.045em; font-weight: 770; max-width: 11em; text-wrap: balance; }
+  .lede { font-size: var(--step-1); line-height: 1.5; color: var(--ink-2); max-width: 31em; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+  .demo-wrap { padding-bottom: clamp(40px, 5vw, 64px); }
+  .compat-meta { margin-left: auto; font-size: var(--step--1); color: var(--muted); }
+  .compat { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 32px; padding-top: 26px; padding-bottom: 26px; border-top: 1px solid var(--line); }
+  .compat-label { font-size: var(--step--1); color: var(--muted); font-weight: 600; }
+  .compat-item { display: inline-flex; align-items: center; gap: 10px; font-weight: 650; }
+  .compat-item img { width: 22px; height: 22px; }
+  @media (prefers-color-scheme: dark) { .logo-on-light { background: #f7f8fb; border-radius: 6px; padding: 3px; width: 28px !important; height: 28px !important; } }
+
+  /* States */
+  .states { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line-strong); }
+  .state { padding: 28px 24px 8px 0; }
+  .state + .state { padding-left: 24px; border-left: 1px solid var(--line); }
+  .state-stage { position: relative; display: flex; align-items: center; gap: 10px; height: 104px; padding-top: 40px; }
+  .state-dot { width: 7px; height: 7px; }
+  .state-bubble { position: absolute; top: 0; left: 0; font-size: 0.8125rem; }
+  .state h3 { display: flex; align-items: center; gap: 8px; font-size: 1.125rem; letter-spacing: -0.01em; margin: 18px 0 6px; color: var(--state-ink); }
+  .state-means { font-weight: 600; color: var(--ink); }
+  .state-moves { margin-top: 8px; color: var(--muted); font-size: 0.95rem; line-height: 1.55; }
+
+  /* Places */
+  .places { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .place { background: var(--surface); border-radius: var(--radius-card); padding: 20px 20px 28px; }
+  .place h3 { font-size: 1.1875rem; letter-spacing: -0.015em; margin: 24px 4px 8px; }
+  .place p { color: var(--ink-2); margin: 0 4px; max-width: 34em; }
+  .place-art { position: relative; height: 180px; border-radius: 14px; overflow: hidden; background: #d6dde8; display: grid; place-items: center; }
+  @media (prefers-color-scheme: dark) { .place-art { background: #262b34; } }
+  .mini-bar { position: absolute; top: 0; left: 0; right: 0; height: 40px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; background: rgba(247, 248, 251, 0.9); color: #2b303b; font-size: 0.8125rem; font-weight: 650; }
+  .mini-icons { display: flex; gap: 14px; }
+  .mini-pi { position: relative; display: grid; place-items: center; }
+  .mini-pi img { width: 18px; height: 18px; }
+  .mini-pi .dot { position: absolute; bottom: -7px; left: 50%; width: 4px; height: 4px; margin-left: -2px; }
+  .art-bar::after { content: ""; position: absolute; left: 12%; right: 12%; top: 64px; bottom: -20px; background: rgba(255, 255, 255, 0.7); border-radius: 12px 12px 0 0; box-shadow: 0 10px 30px rgba(30, 40, 60, 0.12); }
+  @media (prefers-color-scheme: dark) { .art-bar::after { background: rgba(255, 255, 255, 0.08); } }
+  .desk-tile { position: absolute; display: flex; align-items: center; gap: 8px; }
+  .desk-tile .dot { width: 6px; height: 6px; }
+  .desk-tile .bubble { position: absolute; bottom: 54px; left: 22px; transform: translateX(-50%); font-size: 0.8125rem; }
+  .t-a { left: 26%; top: 92px; } .t-b { left: 58%; top: 104px; }
+  .mini-card, .mini-note { background: rgba(246, 247, 250, 0.98); color: #262a33; border-radius: 16px; box-shadow: 0 10px 30px rgba(24, 30, 42, 0.18); }
+  .mini-card { width: min(300px, 84%); padding: 16px; display: grid; gap: 4px; font-size: 0.875rem; }
+  .mini-card b { font-size: 0.95rem; }
+  .mini-card > span:not(.mini-actions) { color: #5f6672; }
+  .mini-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .mini-actions i { font-style: normal; text-align: center; font-weight: 650; font-size: 0.8125rem; padding: 8px 6px; border-radius: 10px; background: rgba(120, 130, 145, 0.13); white-space: nowrap; }
+  .mini-actions i:first-child { background: #2b303b; color: #fff; }
+  .mini-note { width: min(360px, 88%); display: flex; gap: 12px; align-items: center; padding: 14px; }
+  .mini-note .tile { width: 38px; height: 38px; box-shadow: none; background: #fff; }
+  .mini-note .tile img { width: 20px; height: 20px; }
+  .mini-note b { display: block; font-size: 0.875rem; }
+  .mini-note small { display: block; font-size: 0.8125rem; color: #5f6672; }
+
+  /* Flow */
+  .flow { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; counter-reset: none; }
+  .flow li { position: relative; padding-top: 22px; border-top: 2px solid var(--ink); }
+  .flow-n { font-size: 0.875rem; font-weight: 650; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .flow h3 { font-size: 1.125rem; letter-spacing: -0.01em; margin: 10px 0 8px; }
+  .flow p { color: var(--ink-2); font-size: 0.97rem; }
+  .flow code, .assurances code, .install code { font-size: 0.86em; background: var(--quiet); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+  .assurances { list-style: none; padding: 0; margin-top: 56px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 40px; }
+  .assurances code { white-space: nowrap; }
+  .assurances li { display: flex; gap: 12px; align-items: baseline; color: var(--ink); font-weight: 550; }
+  .assurances li::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--working); transform: translateY(-1px); }
+
+  /* Video */
+  .video-frame { border-radius: var(--radius-card); overflow: hidden; background: #000; box-shadow: var(--shadow-card); aspect-ratio: 16 / 9; }
+  .video-frame video { width: 100%; height: 100%; }
+
+  /* Install */
+  .install { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 48px 72px; align-items: start; }
+  .install h2, .faq-wrap h2 { font-size: var(--step-2); line-height: 1.08; letter-spacing: -0.03em; font-weight: 740; margin-bottom: 20px; }
+  .install-copy > p:not(.uninstall) { color: var(--ink-2); font-size: var(--step-1); line-height: 1.5; }
+  .after { margin: 28px 0 0; padding-left: 1.3em; display: grid; gap: 10px; color: var(--ink-2); }
+  .after li::marker { color: var(--muted); font-family: var(--mono); font-size: 0.85em; }
+  .uninstall { margin-top: 24px; font-size: var(--step--1); color: var(--muted); }
+  .terminal { background: var(--log); color: var(--log-ink); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-card); }
+  .terminal-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px 10px 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.8125rem; font-weight: 600; color: #9aa3b1; }
+  .copy { font: 600 0.8125rem/1 var(--sans); color: #e6e9ef; background: rgba(255, 255, 255, 0.1); border: 0; border-radius: 8px; padding: 9px 12px; min-height: 34px; cursor: pointer; }
+  .copy:hover { background: rgba(255, 255, 255, 0.18); }
+  .terminal pre { margin: 0; padding: 20px 18px 22px; overflow-x: auto; font-size: 0.875rem; line-height: 1.85; }
+  .terminal code { background: none; padding: 0; font-size: inherit; }
+  .terminal .line { display: block; }
+  .prompt { color: #6f7887; user-select: none; }
+  .comment { color: #8b94a3; }
+
+  /* FAQ */
+  .faq-wrap { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: 32px 72px; align-items: start; }
+  .faq { border-top: 1px solid var(--line-strong); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 24px; padding: 20px 0; font-weight: 650; font-size: 1.0625rem; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; flex: none; font-weight: 400; font-size: 1.4rem; line-height: 1; color: var(--muted); }
+  .faq details[open] summary::after { content: "\2212"; }
+  .faq details p { padding: 0 48px 22px 0; color: var(--ink-2); max-width: 40em; }
+
+  /* Footer */
+  .footer { border-top: 1px solid var(--line); padding: 40px 0 48px; font-size: var(--step--1); color: var(--muted); }
+  .footer-in { display: grid; gap: 10px; }
+  .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+  .brand-foot { display: inline-flex; align-items: center; gap: 10px; font-weight: 750; color: var(--ink); font-size: 1rem; }
+  .footer nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+  .footer nav a { color: var(--ink-2); text-decoration: none; padding: 4px 0; }
+  .footer nav a:hover { color: var(--ink); text-decoration: underline; }
+
+  /* Wide screens: a calmer measure, not a wider page. */
+  @media (min-width: 1700px) { :global(html) { font-size: 112.5%; } :root { --max: 1360px; } }
+
+  @media (max-width: 1100px) {
+    .states { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 8px; }
+    .state:nth-child(4) { padding-left: 0; border-left: 0; }
+    .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 900px) {
+    .hero-in { grid-template-columns: 1fr; }
+    .compat-meta { margin-left: 0; width: 100%; }
+    .install, .faq-wrap, .assurances { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px) {
+    .places { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .states { grid-template-columns: 1fr; border-top: 0; }
+    .state, .state + .state { display: grid; grid-template-columns: 128px minmax(0, 1fr); column-gap: 16px; padding: 20px 0; border-left: 0; border-top: 1px solid var(--line); }
+    .state-stage { grid-row: span 3; height: 92px; padding-top: 36px; }
+    .state h3 { margin-top: 0; }
+    .state-means, .state-moves { grid-column: 2; }
+    .flow { grid-template-columns: 1fr; gap: 28px; }
+    .faq details p { padding-right: 0; }
+    .terminal pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.8125rem; }
+    .comment { display: block; padding-left: 1.2em; }
+    .t-a { left: 14%; } .t-b { left: 58%; }
+  }
+</style>
