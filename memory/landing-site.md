@@ -1,11 +1,17 @@
 # Landing site and social kit
 
 Public promotion for GlanceAgent: an Astro landing page with a live demo in
-the hero, plus social images. Branch `feat/landing-site` (worktree
-`../ai-activity-monitor-landing-site`), 2026-11-24. Not deployed.
+the hero, plus social images and launch posts. Owner approved; merged to main
+in PR #10 on 2026-11-24, branch `feat/landing-site` kept. Not deployed yet.
+
+## How to continue
+- Go live: repo Settings, Pages, Source "GitHub Actions", then run "Deploy site to GitHub Pages" from Actions. The workflow has never run, so the first run is its real test. URL: `https://tsvlgd.github.io/ai-activity-monitor/`.
+- Domain: owner to pick (`glanceagent.mehfooj.dev` suggested); then set `SITE_URL` and `BASE_PATH=/`.
+- Not done: roaming and draggable tiles in the demo, a full keyboard tab walk, a real phone test.
+- Local preview: `npm run build && npx astro preview`; Astro 7 detaches the preview server, stop it with `npx astro preview stop`.
 
 ## Owner decisions
-- Owner, 2026-11-24: use the real Claude and OpenCode logos in promo material (resolves D13 for the site). Shown as compatibility marks and on the product's own icons, never as the page's palette or type. The footer says GlanceAgent is independent, not affiliated with Anthropic or OpenCode, and the trademarks belong to their owners.
+- Owner, 2026-11-24: use the real Claude and OpenCode logos in the extension and promo material (D21 in `docs/DECISIONS.md`, PR #8). Shown as compatibility marks and on the product's own icons, never as the page's palette or type. The footer says GlanceAgent is independent, not affiliated with Anthropic or OpenCode, and the trademarks belong to their owners.
 - Owner, 2026-11-24: the hero is an interactive demo ("live preview and taste", not "a newspaper").
 - Copy rules: no project status words, no implementation leaks, nothing untrue. Claims are taken from README, the code and DECISIONS. Tested on GNOME Shell 46 only; 46 to 51 is not claimed. Calls to action: install from source, view on GitHub.
 
@@ -37,9 +43,10 @@ the hero, plus social images. Branch `feat/landing-site` (worktree
 - `site/src/layouts/Base.astro`: head, OG and Twitter tags (image `og.png`).
 - `site/src/pages/index.astro`: hero with the demo, five states, how it works, video (only when `video.src` is set), install, FAQ, footer.
 - `site/src/components/TopBar.astro`: page header.
-- `site/public/logos/`: logos copied unchanged from the extension, sources in `SOURCES.md`. `favicon.svg`: GlanceAgent mark, light and dark.
+- `site/public/logos/`: logos copied unchanged from the extension icons, which came from thesvg.org (sources in `SOURCES.md`); owner may swap in the files from each project's own site. `favicon.svg`: GlanceAgent mark, light and dark.
 - `site/social/template.html` and `render.mjs`: social images; `social/out/*.png`.
-- `site/social/posts.md`, `site/README.md`, `.github/workflows/pages.yml`: written by the coordinating session.
+- `site/social/posts.md` (launch copy for X, LinkedIn, r/gnome, r/ClaudeAI, r/linux, Show HN; `{SITE}` placeholder), `site/README.md`, `.github/workflows/pages.yml` (sets `SITE_URL` and `BASE_PATH` from the Pages config).
+- Work split that met a 30 minute deadline: the designer agent owned `site/src`, config and social images; the main session owned posts, README, workflow and decisions, each committing only its own paths in one shared worktree.
 
 ## Regenerate the social images
 ```bash

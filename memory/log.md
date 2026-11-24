@@ -1,5 +1,6 @@
 # Log
 
+- 2026-11-24: Real logos kept (D21, PR #8). Landing site and social kit built with the designer agent (designer run about 35 minutes, main session in parallel), owner approved, merged (PR #10, branch kept). Live once Pages is enabled; see memory/landing-site.md
 - 2026-11-23: PR #5 merged (container tests, distro images, disk safety); Sunday plan written to memory/active-task.md
 - 2026-11-23: Disk emergency (/home full from test images and 12 GB build cache); added disk guard, cache cap, per run image removal and scripts/cleanup-ci.sh (D20)
 - 2026-11-23: Phase 2 done: e2e passes on GNOME 49 (Fedora 43) in Docker via scripts/container-test.sh
@@ -11,5 +12,3 @@
 - 2026-11-23: Owner kept the name GlanceAgent despite AgentGlance (macOS); AGENTS.md now requires typed branches (feat, fix, docs, ...) and Conventional Commits
 - 2026-11-23: Owner standing rule: agents open the PR, review, test and merge to main themselves, and keep local main equal to origin/main (AGENTS.md Git workflow)
 - 2026-11-23: PRs 1 to 3 merged: presence for detached sessions, agent merges own PRs, held icon destroyed crash fix and stress script. Blank top bar cause still unknown.
-- 2026-11-24: Owner kept the real logos (D21, PR #8). Landing site and social kit started on feat/landing-site with the designer agent: Astro, React demo island on lib/core, launch posts, Pages workflow.
-- 2026-11-24: Landing site approved by owner (lgtm) and merged; branch feat/landing-site kept to preserve the work. Live after Pages is enabled.
