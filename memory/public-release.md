@@ -14,7 +14,7 @@ Full research and distro matrix: `docs/research/agentglance.md`.
 - 2026-11-23: License GPL-2.0-or-later for the whole repo, owner let the agent choose (D18). Logos excluded from it.
 - 2026-11-23: Name GlanceAgent, UUID `glanceagent@mehfooj.dev`, schema `org.gnome.shell.extensions.glanceagent` (D17). Flagged to owner: the name is AgentGlance reversed, a confusion and trademark risk; free to change until published.
 - 2026-11-24: Keep the real Claude and OpenCode logos, unaltered, in the extension and in promo material; site footer says not affiliated (D21, PR #8). Replaces the logo replacement question.
-- 2026-11-24: Promo landing site and social kit in progress on `feat/landing-site` (worktree `../ai-activity-monitor-landing-site`): Astro static page plus one React island demo that imports `lib/core`, GitHub Pages workflow, launch posts. Owner wants an interactive demo, not a text page. Details in `memory/landing-site.md` once that branch merges.
+- 2026-11-24: Landing site and social kit merged (PR #10): Astro page whose hero is an interactive demo running `lib/core`, launch posts, Pages workflow. Owner wants a demo to play with, not a text page. Details and go live steps in `landing-site.md`.
 
 ## Known blockers (from research, verify before acting)
 - `metadata.json`: shell-version only 46, UUID `@local`, `version` field, localhost url block extensions.gnome.org.

@@ -15,6 +15,7 @@ Motion graphics walkthrough of the product, about 48 s, 1080p, 30 fps.
 - Codex is shown working like the other agents although no Codex adapter exists (owner choice).
 - Logos: Claude from claude.com, OpenCode from opencode.ai/brand, Codex is the OpenAI blossom (no official Codex mark found). Sources in `~/Dev/workspace/aimon-video/assets/logos/SOURCES.md`.
 - Owner wallpaper is third party art: use the neutral render for anything public.
+- The landing site keeps its video section off: a working Codex agent would be an untrue product claim there. Needs a cut without Codex (see `landing-site.md`).
 
 ## Cut (v3)
 hook, problem, intro, top bar (video and blog in Chrome, icons stay visible), 3 s silent desktop interlude (tiles bump, say hi), what matters (approval, question, done over a playing video), click on a top bar icon (card, Open in Terminal to the permission prompt, Dismiss stops the bounce), outro.
