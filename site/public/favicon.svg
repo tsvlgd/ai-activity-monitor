@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <title>GlanceAgent</title>
+  <style>
+    .t { fill: #2b303b; } .s { fill: #f7f8fb; }
+    @media (prefers-color-scheme: dark) { .t { fill: #eceff4; } .s { fill: #16181d; } }
+  </style>
+  <rect class="t" x="2" y="5" width="22" height="22" rx="6.5"/>
+  <rect class="s" x="8" y="11" width="10" height="10" rx="3"/>
+  <circle cx="28.5" cy="16" r="3.2" fill="#3fa877"/>
+</svg>

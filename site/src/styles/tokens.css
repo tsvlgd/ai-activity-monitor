@@ -1,0 +1,87 @@
+/* GlanceAgent design tokens: colour, type and shape. The one source for the
+   page, the demo island and the social images. State colours mirror the
+   extension's stylesheet.css. */
+
+:root {
+  color-scheme: light dark;
+
+  --ground: #eef0f4;
+  --surface: #f8f9fb;
+  --surface-2: #ffffff;
+  --panel: rgba(247, 248, 251, 0.86);
+  --tile: rgba(247, 248, 251, 0.96);
+  --ink: #1d2129;
+  --ink-2: #434a57;
+  --muted: #59606d;
+  --line: rgba(24, 30, 42, 0.1);
+  --line-strong: rgba(24, 30, 42, 0.16);
+  --button: #2b303b;
+  --button-hover: #3a404d;
+  --on-button: #ffffff;
+  --quiet: rgba(120, 130, 145, 0.14);
+  --quiet-hover: rgba(120, 130, 145, 0.22);
+  --log: #23272f;
+  --log-ink: #d5dae3;
+  --log-warn: #f0c27a;
+  --log-ok: #a9c7f0;
+  --shadow-tile: 0 3px 14px rgba(30, 36, 48, 0.16);
+  --shadow-card: 0 24px 60px rgba(24, 30, 42, 0.16), 0 2px 6px rgba(24, 30, 42, 0.06);
+  --focus: #3d5f9e;
+
+  /* State colours: dots and motion, as in the extension. */
+  --idle: #a3acb9;
+  --working: #3fa877;
+  --waiting: #df9a3c;
+  --completed: #6688cc;
+  --error: #cf5f58;
+  /* State text on tinted chips (4.5:1 or better). */
+  --idle-ink: #4b5563;
+  --working-ink: #2a6e4d;
+  --waiting-ink: #87560f;
+  --completed-ink: #3a5a96;
+  --error-ink: #9c3b35;
+
+  --sans: "Inter Variable", "Adwaita Sans", Cantarell, system-ui, sans-serif;
+  --mono: "JetBrains Mono Variable", "Adwaita Mono", ui-monospace, "DejaVu Sans Mono", monospace;
+
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.3125rem;
+  --step-2: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem);
+  --step-3: clamp(2.6rem, 1.4rem + 4.6vw, 5.25rem);
+
+  --gutter: clamp(16px, 4vw, 40px);
+  --max: 1240px;
+  --radius-card: 20px;
+  --radius-tile: 13px;
+  --radius-control: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #121418;
+    --surface: #191c21;
+    --surface-2: #1f232a;
+    --panel: rgba(26, 29, 35, 0.86);
+    --ink: #eceff4;
+    --ink-2: #c4cad5;
+    --muted: #9ea6b3;
+    --line: rgba(255, 255, 255, 0.09);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --button: #eceff4;
+    --button-hover: #ffffff;
+    --on-button: #16181d;
+    --quiet: rgba(200, 208, 222, 0.1);
+    --quiet-hover: rgba(200, 208, 222, 0.18);
+    --log: #0e1013;
+    --shadow-tile: 0 3px 14px rgba(0, 0, 0, 0.4);
+    --shadow-card: 0 24px 60px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3);
+    --focus: #a9c7f0;
+    --idle-ink: #c4cad5;
+    --working-ink: #7fd3a8;
+    --waiting-ink: #f0c27a;
+    --completed-ink: #a9c1f0;
+    --error-ink: #f0a39e;
+  }
+}
+
