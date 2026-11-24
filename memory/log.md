@@ -11,3 +11,4 @@
 - 2026-11-23: Owner kept the name GlanceAgent despite AgentGlance (macOS); AGENTS.md now requires typed branches (feat, fix, docs, ...) and Conventional Commits
 - 2026-11-23: Owner standing rule: agents open the PR, review, test and merge to main themselves, and keep local main equal to origin/main (AGENTS.md Git workflow)
 - 2026-11-23: PRs 1 to 3 merged: presence for detached sessions, agent merges own PRs, held icon destroyed crash fix and stress script. Blank top bar cause still unknown.
+- 2026-11-24: Owner kept the real logos (D21, PR #8). Landing site and social kit started on feat/landing-site with the designer agent: Astro, React demo island on lib/core, launch posts, Pages workflow.

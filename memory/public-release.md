@@ -13,13 +13,15 @@ Full research and distro matrix: `docs/research/agentglance.md`.
 - Sound effects and more features: discuss after the fixes, not before.
 - 2026-11-23: License GPL-2.0-or-later for the whole repo, owner let the agent choose (D18). Logos excluded from it.
 - 2026-11-23: Name GlanceAgent, UUID `glanceagent@mehfooj.dev`, schema `org.gnome.shell.extensions.glanceagent` (D17). Flagged to owner: the name is AgentGlance reversed, a confusion and trademark risk; free to change until published.
+- 2026-11-24: Keep the real Claude and OpenCode logos, unaltered, in the extension and in promo material; site footer says not affiliated (D21, PR #8). Replaces the logo replacement question.
+- 2026-11-24: Promo landing site and social kit in progress on `feat/landing-site` (worktree `../ai-activity-monitor-landing-site`): Astro static page plus one React island demo that imports `lib/core`, GitHub Pages workflow, launch posts. Owner wants an interactive demo, not a text page. Details in `memory/landing-site.md` once that branch merges.
 
 ## Known blockers (from research, verify before acting)
 - `metadata.json`: shell-version only 46, UUID `@local`, `version` field, localhost url block extensions.gnome.org.
 - St `vertical` property removed in GNOME 51 (panel.js, preview.js, indicators.js).
 - Tab switching only for gnome-terminal; Ptyxis is the default on Fedora and Ubuntu 26.04.
 - `dev-nested.sh` uses `--mode=ubuntu` and `--nested` (removed in GNOME 49).
-- No LICENSE; Claude and OpenCode logos shipped without permission (D13).
+- No LICENSE (now fixed, D18). Logos: owner keeps them (D21).
 
 ## Open questions for the owner
-- extensions.gnome.org account, logo replacement, renaming internal spool and hook folders.
+- extensions.gnome.org account, renaming internal spool and hook folders, site domain.

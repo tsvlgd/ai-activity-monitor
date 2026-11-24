@@ -4,7 +4,9 @@ GNOME Shell extension plus Claude Code and OpenCode adapters that show agent
 session state as top bar icons, desktop tiles and notifications. Architecture
 in `docs/ARCHITECTURE.md`, decisions in `docs/DECISIONS.md`, rules in `AGENTS.md`.
 
-## Where we are (2026-11-23)
+## Where we are (2026-11-24)
+- Logos: owner keeps the real Claude and OpenCode logos everywhere (D21, PR #8).
+- Landing site and social kit in progress on `feat/landing-site` (Astro plus a React demo island running `lib/core`); see `public-release.md`.
 - Workflow: agents open, review and merge their own PRs and keep local main equal to origin/main (PR #2, AGENTS.md). PRs #1 to #3 merged.
 - Presence fix for detached sessions and the held icon crash fix are on main; the live install has only the presence files; log out and in to load; neither seen on screen yet. See `presence-and-panel.md`.
 - On main: presence fix 6baf87f (D15, D16), rename to GlanceAgent `glanceagent@mehfooj.dev` 773e916 (D17), license GPL-2.0-or-later (D18).
@@ -13,6 +15,7 @@ in `docs/ARCHITECTURE.md`, decisions in `docs/DECISIONS.md`, rules in `AGENTS.md
 - Promo video v3 rendered and backed up in `media/promo-video/` (0d7bc8c); name GlanceAgent used in the video only.
 
 ## Next
+- Landing site: owner reviews screenshots, then PR for `feat/landing-site`; owner picks a domain and enables GitHub Pages.
 - Sunday 2026-11-29: follow "Sunday checklist" in `memory/active-task.md` (finish phase 3, then start phase 4).
 - Install the panel fix into the live extension, then verify both fixes on screen after a login.
 - Video: owner to review v3; optional fixes listed in `memory/promo-video.md`.
