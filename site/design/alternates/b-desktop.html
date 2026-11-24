@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B: The desktop</title>
+<link rel="stylesheet" href="base.css">
+<style>
+.stage { position: relative; min-height: 100vh; overflow: hidden; background: radial-gradient(120% 90% at 80% 10%, #dfe6f2 0%, #c9d3e4 45%, #aebbd2 100%); }
+.top { height: 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; background: rgba(247, 248, 251, 0.82); backdrop-filter: blur(12px); font-size: 13px; font-weight: 650; }
+.top .icons { display: flex; gap: 14px; align-items: center; }
+.top .icons span { position: relative; display: grid; place-items: center; }
+.top img { width: 16px; height: 16px; }
+.top i { position: absolute; bottom: -6px; left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 2px; }
+.win { position: absolute; right: 6%; top: 15%; width: 44%; height: 58%; background: rgba(255, 255, 255, 0.55); border-radius: 14px; box-shadow: 0 20px 60px rgba(30, 40, 60, 0.18); }
+.win::before { content: ""; display: block; height: 38px; border-bottom: 1px solid var(--line); }
+.t1 { position: absolute; left: 47%; top: 72%; } .t2 { position: absolute; left: 55%; top: 80%; } .t3 { position: absolute; left: 39%; top: 62%; }
+.t1 .bubble, .t2 .bubble { position: absolute; bottom: 54px; left: 50%; transform: translateX(-50%); }
+.copy { position: absolute; left: 6%; top: 20%; max-width: 560px; }
+.copy .w { background: rgba(250, 251, 253, 0.9); border-radius: 22px; padding: 40px 40px 34px; box-shadow: 0 20px 60px rgba(30, 40, 60, 0.16); }
+h1 { font-size: clamp(40px, 5vw, 66px); line-height: 1.03; letter-spacing: -0.035em; font-weight: 760; margin-bottom: 18px; }
+.lede { font-size: 18px; color: var(--ink-2); }
+.ctas { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+@media (max-width: 900px) {
+  .win { display: none; } .copy { position: relative; left: 0; top: 0; padding: 40px 16px 200px; }
+  .copy .w { padding: 28px 22px; }
+  .t1 { left: 30%; top: auto; bottom: 90px; } .t2 { left: 62%; top: auto; bottom: 50px; } .t3 { left: 12%; top: auto; bottom: 40px; }
+}
+</style></head><body>
+<div class="stage">
+  <div class="top"><span>GlanceAgent</span><span>Tue 24 Nov&ensp;10:42</span>
+    <span class="icons"><span><img src="logos/claude-code.svg" alt=""><i style="background:var(--working)"></i></span><span><img src="logos/opencode.svg" alt=""><i style="background:var(--waiting)"></i></span></span></div>
+  <div class="win"></div>
+  <div class="copy"><div class="w">
+    <h1>Agents that live on your desktop.</h1>
+    <p class="lede">Every Claude Code and OpenCode session gets a small tile on the empty desktop and an icon in the top bar. Tiles roam, bump into each other and say hi. When one needs you, it hops.</p>
+    <div class="ctas"><a class="btn btn-primary">Install from source</a><a class="btn">View on GitHub</a></div>
+  </div></div>
+  <div class="t3 tile"><img src="logos/claude-code.svg" alt=""><span class="dot" style="background:var(--idle)"></span></div>
+  <div class="t1 tile"><img src="logos/claude-code.svg" alt=""><span class="dot" style="background:var(--working)"></span><span class="bubble">hi OpenCode!</span></div>
+  <div class="t2 tile"><img src="logos/opencode.svg" alt=""><span class="dot" style="background:var(--waiting)"></span><span class="bubble">need you!</span></div>
+</div>
+</body></html>
